@@ -66,7 +66,7 @@ Analyze APK (analyze):
 
 Unpack application (dump):
   android-armor-breaker dump [Options] <package_name>
-  或
+  or
   android-armor-breaker [Options] <package_name> (Shorthand form)
 
   -p, --package <package_name>    Android application package name (Required)
@@ -96,7 +96,7 @@ Skill features:
 Recommended workflow:
   1. First analyze APK: android-armor-breaker analyze --apk app.apk
   2. Select unpacking parameters based on analysis results
-  3. Execute unpacking: android-armor-breaker --package <package_name> [参数]
+  3. Execute unpacking: android-armor-breaker --package <package_name> [parameters]
 EOF
 }
 
@@ -118,7 +118,7 @@ Examples:
 
 Output:
   - Console displays protection analysis report
-  - Generate JSON format detailed report: <apk文件名>_protection_analysis.json
+  - Generate JSON format detailed report: <apkfilename>_protection_analysis.json
 EOF
 }
 
@@ -128,12 +128,12 @@ Android application unpacking tool
 
 Usage:
   android-armor-breaker dump [Options] <Package name or APK file>
-  或
+  or
   android-armor-breaker [Options] <Package name or APK file> (Shorthand form)
 
 Options:
   -p, --package <package_name>    Android application package name (Mutually exclusive with --apk)
-  -a, --apk <APK文件>     APK file path (Automatically analyze protection and extract package name)
+  -a, --apk <APKfile>     APK file path (Automatically analyze protection and extract package name)
   -o, --output <directory>     Output directory (Default: ./dex_output)
   -d, --deep-search      Deep search mode（For strong protections like new Baidu protection）
   -b, --bypass-antidebug Enable anti-debug bypass（For strong anti-debugging protection）
@@ -170,7 +170,7 @@ analyze_apk() {
     local APK_PATH=""
     local VERBOSE=false
     
-    # 解析analyzeSubcommands的参数
+    # Analyze the parameters of analyzeSubcommands
     shift  # Remove "analyze"
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -194,9 +194,9 @@ analyze_apk() {
         esac
     done
     
-    # 验证参数
+    # Verify parameters
     if [ -z "$APK_PATH" ]; then
-        log_error "请指定APK file path"
+        log_error "Please specify the APK file path"
         show_analyze_help
         exit 1
     fi
@@ -226,7 +226,7 @@ dump_apk() {
     local BYPASS_ANTIDEBUG=false
     local VERBOSE=false
     
-    # 如果是dumpSubcommands，移除第一个参数
+    # If it is dumpSubcommands, remove the first parameter
     if [ "$1" = "dump" ]; then
         shift
     fi
@@ -284,7 +284,7 @@ dump_apk() {
         exit 1
     fi
     
-    # 创建Output directory
+    # create Output directory
     mkdir -p "$OUTPUT_DIR"
     
     # Display execution information
@@ -292,10 +292,10 @@ dump_apk() {
     log_info "Output directory: $OUTPUT_DIR"
     
     if [ "$DEEP_SEARCH" = true ]; then
-        log_info "Deep search mode: 启用"
+        log_info "Deep search mode: enable"
     fi
     if [ "$BYPASS_ANTIDEBUG" = true ]; then
-        log_info "Anti-debug bypass: 启用"
+        log_info "Anti-debug bypass: enable"
     fi
     if [ "$VERBOSE" = true ]; then
         log_info "Verbose mode: Enabled"
@@ -315,7 +315,7 @@ dump_apk() {
     fi
     
     # Execute Python script
-    log_info "开始Execute unpacking..."
+    log_info "start Execute unpacking..."
     python3 "$PYTHON_SCRIPT" $PYTHON_ARGS
     
     # Check execution result
@@ -337,7 +337,7 @@ main() {
         exit 0
     fi
     
-    # 检查第一个参数是否是Subcommands
+    # Check whether the first parameter is a Subcommand
     case "$1" in
         analyze)
             analyze_apk "$@"
@@ -350,15 +350,15 @@ main() {
             exit 0
             ;;
         *)
-            # 如果没有Subcommands，DefaultExecute unpacking功能 (向后兼容)
+            # If there are no Subcommands, the DefaultExecute unpacking function (backward compatibility)
             # Check if parameter is a package name (does not start with -)
             if [[ "$1" == -* ]]; then
-                # 是Options，Execute unpacking
+                # Options，Execute unpacking
                 dump_apk "$@"
             else
                 # Might be a package name, check if it contains . character (package name characteristic)
                 if [[ "$1" == *.* ]]; then
-                    log_info "检测到package_name格式，Execute unpacking功能"
+                    log_info "Detected package_name format, execute unpacking function"
                     dump_apk "$@"
                 else
                     # Unknown command
@@ -372,5 +372,5 @@ main() {
     esac
 }
 
-# 执行Main function
+# execute Main function
 main "$@"
