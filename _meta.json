@@ -1,11 +1,12 @@
 {
   "ownerId": "kn7bf7rxabm59t3y32sn2arwb98313v3",
   "slug": "android-armor-breaker",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "publishedAt": 1774252478757,
   "updatedAt": 1774255873120,
   "internationalization": true,
   "english_completeness": "100%",
-  "included_files": 10,
+  "file_count": 11,
+  "primary_entry_point": "scripts/android-armor-breaker.py",
   "description": "Android Armor Breaker - Frida-based unpacking technology for commercial to enterprise Android app protections, providing complete APK reinforcement analysis and intelligent DEX extraction solutions. Fully internationalized with 100% English documentation and scripts, ready for global deployment."
 }

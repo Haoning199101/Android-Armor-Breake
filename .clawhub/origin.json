@@ -2,7 +2,7 @@
   "version": 1,
   "registry": "https://clawhub.ai",
   "slug": "android-armor-breaker",
-  "installedVersion": "1.1.3",
+  "installedVersion": "1.1.4",
   "installedAt": 1774255873120,
   "updatedAt": 1774255873120,
   "internationalization": true,
@@ -14,10 +14,12 @@
     "_meta.json",
     "README.md",
     "SKILL.md",
-    "scripts/android-armor-breaker",
+    "scripts/android-armor-breaker.py",
+    "scripts/android-armor-breaker.sh",
     "scripts/antidebug_bypass.py",
     "scripts/apk_protection_analyzer.py",
     "scripts/enhanced_dexdump_runner.py"
   ],
-  "notes": "Version 1.1.3: Fix file inclusion issues in ClawHub publishing"
+  "primary_entry_point": "scripts/android-armor-breaker.py",
+  "notes": "Version 1.1.4: Added Python wrapper and .sh extension to ensure all files are included"
 }
