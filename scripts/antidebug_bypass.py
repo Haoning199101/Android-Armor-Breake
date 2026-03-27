@@ -36,37 +36,37 @@ class AntiDebugBypass:
         """Load enhanced default configuration"""
         return {
             "bypass_techniques": {
-                "frida_deep_hide": True,      # Frida深度隐藏
-                "memory_scan_defense": True,   # 内存扫描对抗
-                "system_call_hooks": True,     # 系统调用Hook增强
-                "java_anti_debug": True,       # Java层反调试Hook
-                "timing_bypass": True,         # 时间差检测绕过
-                "multi_layer_defense": True,   # 多层防御
+                "frida_deep_hide": True,      # Frida deep hiding
+                "memory_scan_defense": True,   # Memory scan defense
+                "system_call_hooks": True,     # System call hook enhancement
+                "java_anti_debug": True,       # Java layer anti-debug hook
+                "timing_bypass": True,         # Timing detection bypass
+                "multi_layer_defense": True,   # Multi-layer defense
             },
             "frida_config": {
-                "delay_injection_ms": 10000,   # 10秒延迟注入，给应用更多初始化时间
-                "staged_injection": True,      # 分阶段注入
-                "heartbeat_interval": 25000,   # 25秒心跳，带随机偏移
-                "randomize_timing": True,      # 随机化时间间隔
+                "delay_injection_ms": 10000,   # 10-second delayed injection, giving app more initialization time
+                "staged_injection": True,      # Staged injection
+                "heartbeat_interval": 25000,   # 25-second heartbeat, with random offset
+                "randomize_timing": True,      # Randomize timing intervals
             },
             "hook_config": {
-                "hook_debug_check": True,      # 调试检查Hook
-                "hook_system_exit": True,      # 系统退出Hook
+                "hook_debug_check": True,      # Debug check hook
+                "hook_system_exit": True,      # System exit hook
                 "hook_ptrace": True,           # ptrace Hook
-                "hook_file_access": True,      # 文件访问Hook
-                "hook_memory_access": True,    # 内存访问Hook（新增）
-                "hook_time_functions": True,   # 时间函数Hook（新增）
-                "hook_system_calls": True,     # 系统调用Hook（新增）
+                "hook_file_access": True,      # File access hook
+                "hook_memory_access": True,    # Memory access hook (new)
+                "hook_time_functions": True,   # Time function hook (new)
+                "hook_system_calls": True,     # System call hook (new)
             },
             "detection_config": {
-                "max_detection_bypass": 50,    # 最大检测绕过次数
-                "enable_adaptive_defense": True, # 自适应防御
-                "log_detection_events": True,  # 记录检测事件
+                "max_detection_bypass": 50,    # Maximum detection bypass attempts
+                "enable_adaptive_defense": True, # Adaptive defense
+                "log_detection_events": True,  # Log detection events
             }
         }
     
     def log(self, message, level="INFO"):
-        """记录日志"""
+        """Log message"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         prefixes = {
             "INFO": "📝",
@@ -82,7 +82,7 @@ class AntiDebugBypass:
             
         print(f"{prefix} [{timestamp}] {message}")
         
-        # 记录重要操作
+        # Log important operations
         if level in ["SUCCESS", "ERROR"]:
             self.results["bypass_techniques_applied"].append({
                 "time": timestamp,
@@ -91,71 +91,71 @@ class AntiDebugBypass:
             })
     
     def check_environment(self):
-        """检查环境"""
-        self.log("检查反调试绕过环境...")
+        """Check environment"""
+        self.log("Checking anti-debug bypass environment...")
         
-        # 检查基本工具
+        # Check basic tools
         required_tools = ["frida", "adb"]
         for tool in required_tools:
             try:
                 result = subprocess.run(["which", tool], 
                                       capture_output=True, text=True)
                 if result.returncode != 0:
-                    self.log(f"未找到 {tool}", "ERROR")
+                    self.log(f"Not found {tool}", "ERROR")
                     return False
-                self.log(f"找到 {tool}: {result.stdout.strip()}", "DEBUG")
+                self.log(f"Found {tool}: {result.stdout.strip()}", "DEBUG")
             except Exception as e:
-                self.log(f"检查{tool}失败: {e}", "ERROR")
+                self.log(f"检查{tool}Failed: {e}", "ERROR")
                 return False
         
-        # 检查ADB设备
+        # Check ADB device
         try:
             result = subprocess.run(["adb", "devices"], 
                                   capture_output=True, text=True)
             if "device" not in result.stdout:
-                self.log("未找到Android设备", "ERROR")
+                self.log("Not foundAndroid device", "ERROR")
                 return False
             
-            # 提取设备ID
+            # Extract device ID
             lines = result.stdout.strip().split('\n')
             for line in lines[1:]:
                 if "device" in line:
                     device_id = line.split()[0]
-                    self.log(f"找到设备: {device_id}", "SUCCESS")
+                    self.log(f"Device found: {device_id}", "SUCCESS")
                     self.results["device_id"] = device_id
                     break
             else:
-                self.log("设备状态异常", "ERROR")
+                self.log("Device status abnormal", "ERROR")
                 return False
                 
         except Exception as e:
-            self.log(f"检查ADB设备失败: {e}", "ERROR")
+            self.log(f"Failed to check ADB device: {e}", "ERROR")
             return False
         
-        # 检查Frida服务
+        # Check Frida service
         try:
             result = subprocess.run(["frida-ps", "-U"], 
                                   capture_output=True, text=True, timeout=5)
             if result.returncode != 0:
-                self.log("Frida服务可能未运行", "WARNING")
+                self.log("Frida service may not be running", "WARNING")
             else:
-                self.log("Frida服务运行正常", "SUCCESS")
+                self.log("Frida service running normally", "SUCCESS")
         except Exception as e:
-            self.log(f"检查Frida服务失败: {e}", "WARNING")
+            self.log(f"Failed to check Frida service: {e}", "WARNING")
         
         return True
     
     def generate_frida_bypass_script(self, package_name):
-        """生成增强版Frida绕过脚本 - 多层反检测策略"""
-        self.log(f"生成增强版反调试绕过脚本 for {package_name}")
+        """Generate enhanced Frida bypass script - multi-layer anti-detection strategy"""
+        self.log(f"Generate enhanced anti-debug bypass script for {package_name}")
         
-        js_code = f"""// 反调试绕过脚本 v2.0 - 多层反检测增强版
+        js_code = f"""// 反Debug绕过script v2.0 - 多层反检测增强版
 // 目标包名: {package_name}
 // 生成时间: {datetime.now().isoformat()}
 // 功能: Frida深度隐藏 + 内存扫描对抗 + 系统调用Hook + 时间差检测绕过
 
 Java.perform(function() {{
-    console.log("[🛡️] 增强版反调试绕过脚本加载");
+    console.log("[🛡️] Enhanced anti-debug bypass script loaded");
     
     var bypassInfo = {{
         "package_name": "{package_name}",
@@ -170,7 +170,7 @@ Java.perform(function() {{
     // ============ 第1层: Frida-server深度隐藏 ============
     
     function applyFridaDeepHide() {{
-        console.log("[🛡️] 应用Frida深度隐藏...");
+        console.log("[🛡️] applicationFrida深度隐藏...");
         
         // 1.1 重命名Frida进程特征（如果可访问/proc/self/cmdline）
         try {{
@@ -198,7 +198,7 @@ Java.perform(function() {{
                                     var fakeNames = ["/system/bin/app_process", "/system/bin/logd", "/system/bin/surfaceflinger"];
                                     var fakeName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
                                     Memory.writeUtf8String(this.context.buf, fakeName);
-                                    console.log("[Frida-Hide] 隐藏进程名特征");
+                                    console.log("[Frida-Hide] 隐藏process名features");
                                     bypassInfo.hooks_applied.process_name_hidden = true;
                                     bypassInfo.detection_bypassed++;
                                 }}
@@ -207,7 +207,7 @@ Java.perform(function() {{
                     }}
                 }});
             }}
-        }} catch (e) {{ console.log("[❌] 进程名隐藏失败: " + e); }}
+        }} catch (e) {{ console.log("[❌] process名隐藏Failed: " + e); }}
         
         // 1.2 隐藏Frida端口特征（监控socket相关调用）
         try {{
@@ -226,7 +226,7 @@ Java.perform(function() {{
                     }}
                 }});
             }}
-        }} catch (e) {{ console.log("[❌] 端口监控失败: " + e); }}
+        }} catch (e) {{ console.log("[❌] 端口监控Failed: " + e); }}
         
         // 1.3 隐藏Frida特征字符串（扩展版）
         var fridaKeywords = [
@@ -270,9 +270,9 @@ Java.perform(function() {{
                             }}
                         }}
                     }});
-                    console.log("[✅] Hook " + funcName + " 成功");
+                    console.log("[✅] Hook " + funcName + " Success");
                 }}
-            }} catch (e) {{ console.log("[❌] Hook " + funcName + " 失败: " + e); }}
+            }} catch (e) {{ console.log("[❌] Hook " + funcName + " Failed: " + e); }}
         }});
         
         bypassInfo.techniques_applied.push("frida_deep_hide");
@@ -282,7 +282,7 @@ Java.perform(function() {{
     // ============ 第2层: 内存扫描对抗 ============
     
     function applyMemoryScanDefense() {{
-        console.log("[🛡️] 应用内存扫描对抗...");
+        console.log("[🛡️] application内存扫描对抗...");
         
         // 2.1 监控/proc/self/maps访问
         var procAccessFunctions = ["open", "openat", "__openat", "fopen", "fopen64"];
@@ -299,7 +299,7 @@ Java.perform(function() {{
                                     if (path && (path.includes("/proc/self/maps") || 
                                                  path.includes("/proc/self/mem") ||
                                                  path.includes("/proc/self/pagemap"))) {{
-                                        console.log("[Memory-Defense] 拦截内存文件访问: " + path);
+                                        console.log("[Memory-Defense] 拦截内存file访问: " + path);
                                         this.shouldBlock = true;
                                         bypassInfo.hooks_applied.memory_file_blocked = true;
                                         bypassInfo.detection_bypassed++;
@@ -314,9 +314,9 @@ Java.perform(function() {{
                             }}
                         }}
                     }});
-                    console.log("[✅] Hook " + funcName + " 成功");
+                    console.log("[✅] Hook " + funcName + " Success");
                 }}
-            }} catch (e) {{ console.log("[❌] Hook " + funcName + " 失败: " + e); }}
+            }} catch (e) {{ console.log("[❌] Hook " + funcName + " Failed: " + e); }}
         }});
         
         // 2.2 Hook ptrace - 防止内存扫描
@@ -340,7 +340,7 @@ Java.perform(function() {{
                     }}
                 }}
             }});
-            console.log("[✅] Hook ptrace 增强成功");
+            console.log("[✅] Hook ptrace 增强Success");
         }}
         
         // 2.3 防止/proc/self/status中的TracerPid检测
@@ -376,7 +376,7 @@ Java.perform(function() {{
                     }}
                 }});
             }}
-        }} catch (e) {{ console.log("[❌] TracerPid修复失败: " + e); }}
+        }} catch (e) {{ console.log("[❌] TracerPid修复Failed: " + e); }}
         
         bypassInfo.techniques_applied.push("memory_scan_defense");
         console.log("[✅] 内存扫描对抗完成");
@@ -385,7 +385,7 @@ Java.perform(function() {{
     // ============ 第3层: 系统调用Hook增强 ============
     
     function applySystemCallHooks() {{
-        console.log("[🛡️] 应用系统调用Hook增强...");
+        console.log("[🛡️] application系统调用Hook增强...");
         
         // 3.1 关键系统调用监控
         var criticalSyscalls = [
@@ -407,9 +407,9 @@ Java.perform(function() {{
                             bypassInfo.hooks_applied[syscallName + "_monitored"] = true;
                         }}
                     }});
-                    console.log("[✅] 监控 " + syscallName + " 成功");
+                    console.log("[✅] 监控 " + syscallName + " Success");
                 }}
-            }} catch (e) {{ console.log("[❌] 监控 " + syscallName + " 失败: " + e); }}
+            }} catch (e) {{ console.log("[❌] 监控 " + syscallName + " Failed: " + e); }}
         }});
         
         // 3.2 时间相关函数Hook - 绕过时间差检测
@@ -437,9 +437,9 @@ Java.perform(function() {{
                             }}
                         }}
                     }});
-                    console.log("[✅] Hook " + timeFunc + " 成功");
+                    console.log("[✅] Hook " + timeFunc + " Success");
                 }}
-            }} catch (e) {{ console.log("[❌] Hook " + timeFunc + " 失败: " + e); }}
+            }} catch (e) {{ console.log("[❌] Hook " + timeFunc + " Failed: " + e); }}
         }});
         
         bypassInfo.techniques_applied.push("system_call_hooks");
@@ -449,7 +449,7 @@ Java.perform(function() {{
     // ============ 第4层: Java层反调试Hook增强 ============
     
     function applyJavaAntiDebugHooks() {{
-        console.log("[🛡️] 应用Java层反调试Hook...");
+        console.log("[🛡️] applicationJava层反DebugHook...");
         
         // 4.1 标准反调试函数Hook
         try {{
@@ -471,8 +471,8 @@ Java.perform(function() {{
                 }};
             }}
             
-            console.log("[✅] Hook android.os.Debug 成功");
-        }} catch (e) {{ console.log("[❌] Hook android.os.Debug 失败: " + e); }}
+            console.log("[✅] Hook android.os.Debug Success");
+        }} catch (e) {{ console.log("[❌] Hook android.os.Debug Failed: " + e); }}
         
         // 4.2 System属性隐藏
         try {{
@@ -499,8 +499,8 @@ Java.perform(function() {{
                 return originalGetProperty.call(this, key);
             }};
             
-            console.log("[✅] Hook System.getProperty 成功");
-        }} catch (e) {{ console.log("[❌] Hook System.getProperty 失败: " + e); }}
+            console.log("[✅] Hook System.getProperty Success");
+        }} catch (e) {{ console.log("[❌] Hook System.getProperty Failed: " + e); }}
         
         // 4.3 阻止应用退出
         try {{
@@ -521,8 +521,8 @@ Java.perform(function() {{
                 // 不执行退出
             }};
             
-            console.log("[✅] Hook 退出函数成功");
-        }} catch (e) {{ console.log("[❌] Hook 退出函数失败: " + e); }}
+            console.log("[✅] Hook 退出函数Success");
+        }} catch (e) {{ console.log("[❌] Hook 退出函数Failed: " + e); }}
         
         // 4.4 常见反调试类检测和Hook
         var commonAntiDebugClasses = [
@@ -538,7 +538,7 @@ Java.perform(function() {{
             try {{
                 var targetClass = Java.use(classNamePattern);
                 if (targetClass) {{
-                    console.log("[Java-Hook] 发现反调试类: " + classNamePattern);
+                    console.log("[Java-Hook] 发现反Debug类: " + classNamePattern);
                     
                     // 尝试Hook常见方法
                     var methods = targetClass.class.getDeclaredMethods();
@@ -548,12 +548,12 @@ Java.perform(function() {{
                             methodName.includes("isDebug") || methodName.includes("Debug")) {{
                             try {{
                                 targetClass[methodName].implementation = function() {{
-                                    console.log("[Java-Hook] 绕过反调试方法: " + methodName);
+                                    console.log("[Java-Hook] 绕过反Debugmethod: " + methodName);
                                     bypassInfo.hooks_applied.anti_debug_method_bypassed = true;
                                     bypassInfo.detection_bypassed++;
                                     return false; // 对于检测方法返回false
                                 }};
-                                console.log("[✅] Hook 反调试方法: " + methodName);
+                                console.log("[✅] Hook 反Debugmethod: " + methodName);
                             }} catch (e) {{/* 忽略方法Hook失败 */}}
                         }}
                     }}
@@ -562,12 +562,12 @@ Java.perform(function() {{
         }});
         
         bypassInfo.techniques_applied.push("java_anti_debug_hooks");
-        console.log("[✅] Java层反调试Hook完成");
+        console.log("[✅] Java层反DebugHook完成");
     }}
     
     // ============ 执行所有层 ============
     
-    console.log("[🛡️] 开始应用多层反检测策略...");
+    console.log("[🛡️] 开始application多层反检测策略...");
     
     // 应用第1层: Frida深度隐藏
     try {{ applyFridaDeepHide(); }} catch (e) {{ console.log("[❌] Frida深度隐藏异常: " + e); }}
@@ -588,8 +588,8 @@ Java.perform(function() {{
     bypassInfo.total_detection_bypassed = bypassInfo.detection_bypassed;
     
     console.log("[✅] 所有反检测层加载完成");
-    console.log("[📊] 统计: 绕过 " + bypassInfo.detection_bypassed + " 种检测方法");
-    console.log("[📋] 应用的技术: " + bypassInfo.techniques_applied.join(", "));
+    console.log("[📊] 统计: 绕过 " + bypassInfo.detection_bypassed + " 种检测method");
+    console.log("[📋] application的技术: " + bypassInfo.techniques_applied.join(", "));
     
     // 发送初始化状态
     send(bypassInfo);
@@ -610,14 +610,14 @@ Java.perform(function() {{
         return randomInterval;
     }}, {self.config['frida_config']['heartbeat_interval']});
     
-    console.log("[🛡️] 增强版反调试绕过脚本完全就绪 - 版本2.0");
+    console.log("[🛡️] 增强版反Debug绕过script完全就绪 - version2.0");
 }});
 
 // Native层前置初始化
 console.log("[🔧] 增强版Native Hook引擎初始化...");
 """
         
-        # 保存脚本文件
+        # Save script file
         script_dir = Path.home() / ".frida_bypass_scripts"
         script_dir.mkdir(exist_ok=True)
         
@@ -628,47 +628,43 @@ console.log("[🔧] 增强版Native Hook引擎初始化...");
             f.write(js_code)
         
         self.script_path = str(script_path)
-        self.log(f"绕过脚本已保存: {script_path}", "SUCCESS")
+        self.log(f"绕过script已保存: {script_path}", "SUCCESS")
         return str(script_path)
     
     def execute_staged_injection(self, package_name, script_path):
-        """执行分阶段注入"""
-        self.log("执行分阶段注入策略...")
+        """执行分Stage注入"""
+        self.log("执行分Stage注入策略...")
         
         try:
-            # 阶段1: 启动应用
-            self.log("阶段1: 启动目标应用...")
+            # Stage 1: Start application            self.log("Stage1: Start target application...")
             result = subprocess.run(
                 ["adb", "shell", "monkey", "-p", package_name, "-c", "android.intent.category.LAUNCHER", "1"],
                 capture_output=True, text=True, timeout=10
             )
             
             if result.returncode != 0:
-                self.log("应用启动命令执行异常", "WARNING")
-                self.log(f"错误信息: {result.stderr[:100]}", "DEBUG")
+                self.log("application启动命令执行异常", "WARNING")
+                self.log(f"Error信息: {result.stderr[:100]}", "DEBUG")
             
-            # 等待应用初始化
-            delay_ms = self.config['frida_config']['delay_injection_ms']
-            self.log(f"等待 {delay_ms/1000} 秒让应用稳定...")
+            # Wait for application initialization            delay_ms = self.config['frida_config']['delay_injection_ms']
+            self.log(f"等待 {delay_ms/1000} seconds让application稳定...")
             time.sleep(delay_ms / 1000)
             
-            # 阶段2: 获取PID并注入
-            self.log("阶段2: 获取进程PID并注入脚本...")
+            # Stage 2: Get PID and inject            self.log("Stage2: Get process PID and inject script...")
             
-            # 获取进程PID
-            result = subprocess.run(
+            # Get process PID            result = subprocess.run(
                 ["adb", "shell", "pidof", package_name],
                 capture_output=True, text=True
             )
             
             if result.returncode != 0 or not result.stdout.strip():
-                self.log("未找到运行中的进程，尝试直接启动注入", "WARNING")
+                self.log("Not found运行中的process，尝试直接启动注入", "WARNING")
                 return self.execute_direct_injection(package_name, script_path)
             
             pid = result.stdout.strip()
-            self.log(f"找到进程PID: {pid}", "SUCCESS")
+            self.log(f"FoundprocessPID: {pid}", "SUCCESS")
             
-            # 构建Frida命令
+            # Build Frida command
             frida_cmd = [
                 "frida", "-U", "-p", pid,
                 "-l", script_path,
@@ -677,7 +673,7 @@ console.log("[🔧] 增强版Native Hook引擎初始化...");
             
             self.log(f"执行Frida注入: {' '.join(frida_cmd)}", "DEBUG")
             
-            # 启动Frida进程
+            # Start Frida process
             self.frida_process = subprocess.Popen(
                 frida_cmd,
                 stdout=subprocess.PIPE,
@@ -687,31 +683,29 @@ console.log("[🔧] 增强版Native Hook引擎初始化...");
                 universal_newlines=True
             )
             
-            # 等待脚本加载
-            self.log("等待脚本加载 (5秒)...")
+            # Wait for script loading            self.log("Wait for script loading (5 seconds)...")
             time.sleep(5)
             
-            # 检查进程是否存活
-            result = subprocess.run(
+            # Check if process is alive            result = subprocess.run(
                 ["adb", "shell", "pidof", package_name],
                 capture_output=True, text=True
             )
             
             if result.returncode == 0 and result.stdout.strip():
-                self.log("✅ 分阶段注入成功，应用仍在运行", "SUCCESS")
+                self.log("✅ 分Stage注入Success，application仍在运行", "SUCCESS")
                 self.results["injection_pid"] = pid
                 self.results["injection_time"] = datetime.now().isoformat()
                 return True
             else:
-                self.log("❌ 应用在注入后退出", "ERROR")
+                self.log("❌ application在注入后退出", "ERROR")
                 return False
                 
         except Exception as e:
-            self.log(f"分阶段注入失败: {e}", "ERROR")
+            self.log(f"分Stage注入Failed: {e}", "ERROR")
             return False
     
     def execute_direct_injection(self, package_name, script_path):
-        """直接注入（备用方案）"""
+        """直接注入（fallback方案）"""
         self.log("尝试直接注入...")
         
         try:
@@ -731,30 +725,28 @@ console.log("[🔧] 增强版Native Hook引擎初始化...");
                 universal_newlines=True
             )
             
-            # 等待更长时间
-            self.log("等待应用启动和脚本加载 (15秒)...")
+            # Wait for longer time            self.log("Wait for application startup和script加载 (15 seconds)...")
             time.sleep(15)
             
-            # 检查进程
-            result = subprocess.run(
+            # Check process            result = subprocess.run(
                 ["adb", "shell", "pidof", package_name],
                 capture_output=True, text=True
             )
             
             if result.returncode == 0 and result.stdout.strip():
-                self.log("✅ 直接注入成功", "SUCCESS")
+                self.log("✅ 直接注入Success", "SUCCESS")
                 return True
             else:
-                self.log("❌ 直接注入失败", "ERROR")
+                self.log("❌ 直接注入Failed", "ERROR")
                 return False
                 
         except Exception as e:
-            self.log(f"直接注入失败: {e}", "ERROR")
+            self.log(f"直接注入Failed: {e}", "ERROR")
             return False
     
     def verify_bypass_effectiveness(self, package_name):
-        """增强版验证绕过效果"""
-        self.log("执行增强版反调试绕过验证...")
+        """增强版Verify绕过效果"""
+        self.log("执行增强版反Debug绕过Verify...")
         
         verification_tests = {
             "process_alive": False,
@@ -765,8 +757,7 @@ console.log("[🔧] 增强版Native Hook引擎初始化...");
             "extended_stability": False
         }
         
-        # 测试1: 进程存活和完整性
-        self.log("测试1: 验证进程存活和完整性...")
+        # Test 1: Process alive and integrity        self.log("Test1: Verify process alive and integrity...")
         try:
             result = subprocess.run(
                 ["adb", "shell", "pidof", package_name],
@@ -774,29 +765,27 @@ console.log("[🔧] 增强版Native Hook引擎初始化...");
             )
             if result.returncode == 0 and result.stdout.strip():
                 pids = result.stdout.strip().split()
-                self.log(f"✅ 测试1: 找到 {len(pids)} 个进程: {pids}", "SUCCESS")
+                self.log(f"✅ Test1: Found {len(pids)} 个process: {pids}", "SUCCESS")
                 verification_tests["process_alive"] = True
                 
-                # 检查进程状态
-                for pid in pids:
+                # Check process状态                for pid in pids:
                     proc_status = subprocess.run(
                         ["adb", "shell", "cat", f"/proc/{pid}/status | grep State"],
                         capture_output=True, text=True
                     )
                     if proc_status.returncode == 0:
-                        self.log(f"  进程 {pid} 状态: {proc_status.stdout.strip()}", "DEBUG")
+                        self.log(f"  process {pid} 状态: {proc_status.stdout.strip()}", "DEBUG")
             else:
-                self.log("❌ 测试1: 应用进程不存在", "ERROR")
+                self.log("❌ Test1: applicationprocess不存在", "ERROR")
         except Exception as e:
-            self.log(f"❌ 测试1失败: {e}", "ERROR")
+            self.log(f"❌ Test1Failed: {e}", "ERROR")
         
-        # 测试2: Frida注入验证（增强版）
-        self.log("测试2: 验证Frida注入和脚本执行...")
+        # Test 2: Frida injection verification (enhanced)        self.log("Test2: Verify Frida injection and script execution...")
         try:
-            # 更复杂的验证脚本，测试多层Hook
+            # More complex verification script, testing multi-layer hooks
             test_script = """
 Java.perform(function() {
-    console.log("[验证] 增强版验证脚本执行");
+    console.log("[Verify] 增强版verify script执行");
     
     var testResults = {
         "java_hooks_working": false,
@@ -809,11 +798,11 @@ Java.perform(function() {
     try {
         var Debug = Java.use('android.os.Debug');
         var isDebug = Debug.isDebuggerConnected();
-        console.log("[验证] Debug.isDebuggerConnected() = " + isDebug);
+        console.log("[Verify] Debug.isDebuggerConnected() = " + isDebug);
         if (isDebug === false) {
             testResults.java_hooks_working = true;
         }
-    } catch(e) { console.log("[验证] Java层测试异常: " + e); }
+    } catch(e) { console.log("[Verify] Java层Test异常: " + e); }
     
     // 测试Native层访问（简化版）
     try {
@@ -821,7 +810,7 @@ Java.perform(function() {
         if (Module) {
             testResults.native_hooks_working = true;
         }
-    } catch(e) { console.log("[验证] Native层测试异常: " + e); }
+    } catch(e) { console.log("[Verify] Native层Test异常: " + e); }
     
     // 测试Frida特征隐藏
     try {
@@ -829,9 +818,9 @@ Java.perform(function() {
         var memoryRegions = Process.enumerateRanges('r--');
         // 简化检查，只是象征性测试
         testResults.frida_hidden = true; // 假设隐藏成功
-    } catch(e) { console.log("[验证] Frida隐藏测试异常: " + e); }
+    } catch(e) { console.log("[Verify] Frida隐藏Test异常: " + e); }
     
-    console.log("[验证] 测试完成: " + JSON.stringify(testResults));
+    console.log("[Verify] Test完成: " + JSON.stringify(testResults));
     send({"verification": "enhanced", "results": testResults});
 });
 """
@@ -839,16 +828,15 @@ Java.perform(function() {
             temp_file.write(test_script)
             temp_file.close()
             
-            # 获取主进程PID
-            result = subprocess.run(
+            # Get main process PID            result = subprocess.run(
                 ["adb", "shell", "pidof", package_name],
                 capture_output=True, text=True
             )
             
             if result.returncode == 0 and result.stdout.strip():
-                pid = result.stdout.strip().split()[0]  # 取第一个PID
+                pid = result.stdout.strip().split()[0]  # Take first PID
                 
-                # 尝试注入验证脚本
+                # Attempt to inject verification script
                 frida_cmd = [
                     "frida", "-U", "-p", pid, "-l", temp_file.name,
                     "--no-pause", "--exit-on-error", "-q"
@@ -862,30 +850,28 @@ Java.perform(function() {
                 os.unlink(temp_file.name)
                 
                 if result.returncode == 0:
-                    self.log("✅ 测试2: Frida注入成功", "SUCCESS")
+                    self.log("✅ Test2: Frida注入Success", "SUCCESS")
                     verification_tests["frida_injection"] = True
                     
-                    # 分析输出
+                    # Analyze output
                     if "java_hooks_working" in result.stdout or "enhanced" in result.stdout:
-                        self.log("✅ 测试2: 多层Hook验证通过", "SUCCESS")
+                        self.log("✅ Test2: 多层HookVerify通过", "SUCCESS")
                         verification_tests["hook_effectiveness"] = True
                 else:
                     output_preview = result.stderr[:100] if result.stderr else result.stdout[:100]
-                    self.log(f"⚠️ 测试2: Frida脚本执行异常: {output_preview}", "WARNING")
+                    self.log(f"⚠️ Test2: Fridascript执行异常: {output_preview}", "WARNING")
             else:
-                self.log("❌ 测试2: 无有效PID", "WARNING")
+                self.log("❌ Test2: 无有效PID", "WARNING")
         except subprocess.TimeoutExpired:
-            self.log("✅ 测试2: Frida脚本执行（超时但进程存活）", "SUCCESS")
+            self.log("✅ Test2: Fridascript执行（Timeout但process alive）", "SUCCESS")
             verification_tests["frida_injection"] = True
-            verification_tests["hook_effectiveness"] = True  # 假设有效
+            verification_tests["hook_effectiveness"] = True  # Assume valid
         except Exception as e:
-            self.log(f"⚠️ 测试2异常: {e}", "WARNING")
+            self.log(f"⚠️ Test2异常: {e}", "WARNING")
         
-        # 测试3: 多层防御检查
-        self.log("测试3: 多层防御有效性检查...")
+        # Test 3: Multi-layer defense check        self.log("Test3: Multi-layer defense effectiveness check...")
         try:
-            # 检查进程是否稳定（无崩溃）
-            stability_check_script = """
+            # Check process是否稳定（no crash）            stability_check_script = """
 setInterval(function() {
     send({"heartbeat": new Date().toISOString()});
 }, 5000);
@@ -902,7 +888,7 @@ setInterval(function() {
             if result.returncode == 0:
                 pid = result.stdout.strip().split()[0]
                 
-                # 快速检查，不等待完整执行
+                # Quick check, don't wait for complete execution
                 frida_cmd = [
                     "frida", "-U", "-p", pid, "-l", temp_file.name,
                     "--no-pause", "-q"
@@ -915,39 +901,35 @@ setInterval(function() {
                     text=True
                 )
                 
-                # 等待2秒看是否成功启动
-                time.sleep(2)
+                # Wait 2 seconds to see if started successfully                time.sleep(2)
                 process.terminate()
                 process.wait(timeout=1)
                 
                 os.unlink(temp_file.name)
                 
-                # 检查进程是否还在
-                result = subprocess.run(
+                # Check process是否还在                result = subprocess.run(
                     ["adb", "shell", "pidof", package_name],
                     capture_output=True, text=True
                 )
                 
                 if result.returncode == 0:
-                    self.log("✅ 测试3: 多层防御有效，进程稳定", "SUCCESS")
+                    self.log("✅ Test3: 多层防御有效，process稳定", "SUCCESS")
                     verification_tests["multi_layer_check"] = True
                 else:
-                    self.log("❌ 测试3: 进程在测试中退出", "WARNING")
+                    self.log("❌ Test3: process在Test中退出", "WARNING")
             else:
-                self.log("❌ 测试3: 进程已退出", "WARNING")
+                self.log("❌ Test3: process已退出", "WARNING")
         except Exception as e:
-            self.log(f"⚠️ 测试3异常: {e}", "WARNING")
+            self.log(f"⚠️ Test3异常: {e}", "WARNING")
         
-        # 测试4: 扩展稳定性观察（更长观察时间）
-        self.log("测试4: 扩展稳定性观察 (15秒)...")
+        # Test 4: Extended stability observation (longer observation time)        self.log("Test4: Extended stability observation (15 seconds)...")
         try:
             start_time = time.time()
             crash_count = 0
             max_checks = 5
             
             for i in range(max_checks):
-                time.sleep(3)  # 每3秒检查一次
-                
+                time.sleep(3)  # Check every 3 seconds                
                 result = subprocess.run(
                     ["adb", "shell", "pidof", package_name],
                     capture_output=True, text=True
@@ -955,46 +937,43 @@ setInterval(function() {
                 
                 if result.returncode != 0 or not result.stdout.strip():
                     crash_count += 1
-                    self.log(f"⚠️ 检查 {i+1}/{max_checks}: 进程暂时消失", "WARNING")
+                    self.log(f"⚠️ 检查 {i+1}/{max_checks}: process暂时消失", "WARNING")
             
             if crash_count == 0:
-                self.log("✅ 测试4: 扩展稳定性通过 (15秒观察无崩溃)", "SUCCESS")
+                self.log("✅ Test4: 扩展稳定性通过 (15 seconds观察no crash)", "SUCCESS")
                 verification_tests["extended_stability"] = True
             elif crash_count < max_checks / 2:
-                self.log(f"⚠️ 测试4: 基本稳定 ({crash_count}次短暂消失)", "WARNING")
-                verification_tests["extended_stability"] = True  # 仍算通过
+                self.log(f"⚠️ Test4: 基本稳定 ({crash_count}次短暂消失)", "WARNING")
+                verification_tests["extended_stability"] = True  # Still considered passed
             else:
-                self.log(f"❌ 测试4: 稳定性差 ({crash_count}次消失)", "ERROR")
+                self.log(f"❌ Test4: 稳定性差 ({crash_count}次消失)", "ERROR")
         except Exception as e:
-            self.log(f"⚠️ 测试4异常: {e}", "WARNING")
+            self.log(f"⚠️ Test4异常: {e}", "WARNING")
         
-        # 计算成功率
-        passed_tests = sum(1 for test in verification_tests.values() if test)
+        # Calculate success rate        passed_tests = sum(1 for test in verification_tests.values() if test)
         total_tests = len(verification_tests)
         success_rate = passed_tests / total_tests
         
         self.results["verification_results"] = verification_tests
         self.results["verification_score"] = success_rate
         
-        self.log(f"验证结果: {passed_tests}/{total_tests} 通过 ({success_rate:.0%})", 
+        self.log(f"Verify结果: {passed_tests}/{total_tests} 通过 ({success_rate:.0%})", 
                 "SUCCESS" if success_rate >= 0.67 else "WARNING")
         
-        return success_rate >= 0.67  # 至少通过2/3的测试
-    
+        return success_rate >= 0.67  # Pass at least 2/3 of tests    
     def cleanup(self):
         """清理资源"""
         self.log("清理资源...")
         
-        # 终止Frida进程
-        if self.frida_process and self.frida_process.poll() is None:
-            self.log("终止Frida进程", "INFO")
+        # Terminate Frida process        if self.frida_process and self.frida_process.poll() is None:
+            self.log("Terminating Frida process", "INFO")
             self.frida_process.terminate()
             try:
                 self.frida_process.wait(timeout=5)
             except:
                 self.frida_process.kill()
         
-        # 保存结果
+        # Save results
         self.save_results()
     
     def save_results(self):
@@ -1016,43 +995,43 @@ setInterval(function() {
         return str(results_file)
     
     def run_bypass(self, package_name):
-        """执行完整的反调试绕过流程"""
-        self.log(f"开始反调试绕过流程: {package_name}")
+        """执行完整的反Debug绕过流程"""
+        self.log(f"开始反Debug绕过流程: {package_name}")
         self.results["package_name"] = package_name
         
         try:
-            # 1. 检查环境
+            # 1. Check environment
             if not self.check_environment():
-                self.log("环境检查失败", "ERROR")
+                self.log("环境Check failed", "ERROR")
                 return False
             
-            # 2. 生成Frida脚本
+            # 2. Generate Frida script
             script_path = self.generate_frida_bypass_script(package_name)
             if not script_path:
-                self.log("生成脚本失败", "ERROR")
+                self.log("生成scriptFailed", "ERROR")
                 return False
             
-            # 3. 执行注入
+            # 3. Execute injection
             if self.config['frida_config']['staged_injection']:
                 injection_success = self.execute_staged_injection(package_name, script_path)
             else:
                 injection_success = self.execute_direct_injection(package_name, script_path)
             
             if not injection_success:
-                self.log("注入失败", "ERROR")
+                self.log("注入Failed", "ERROR")
                 return False
             
-            # 4. 验证绕过效果
+            # 4. Verify bypass effectiveness
             verification_success = self.verify_bypass_effectiveness(package_name)
             
             if verification_success:
-                self.log("✅ 反调试绕过成功完成", "SUCCESS")
+                self.log("✅ 反Debug绕过Success完成", "SUCCESS")
                 self.results["final_status"] = "success"
                 return True
             else:
-                self.log("⚠️ 绕过效果验证不完整", "WARNING")
+                self.log("⚠️ 绕过效果Verify不完整", "WARNING")
                 self.results["final_status"] = "partial_success"
-                return True  # 仍返回True，表示流程执行完成
+                return True  # Still returns True, indicating process execution completed
                 
         except KeyboardInterrupt:
             self.log("用户中断执行", "WARNING")
@@ -1068,7 +1047,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='反调试绕过模块 v1.0 - 骗过加固壳的安检系统',
+        description='反Debug绕过模块 v1.0 - 骗过Protection壳的安检系统',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用示例:
@@ -1077,16 +1056,16 @@ def main():
         """
     )
     
-    parser.add_argument('--package', required=True, help='目标应用包名')
+    parser.add_argument('--package', required=True, help='target application包名')
     parser.add_argument('--verbose', action='store_true', help='详细输出模式')
-    parser.add_argument('--config', help='配置文件路径（暂不支持）')
+    parser.add_argument('--config', help='配置filePath（暂不支持）')
     
     args = parser.parse_args()
     
     print("=" * 60)
-    print("🛡️  反调试绕过模块 v1.0 (开发版)")
+    print("🛡️  反Debug绕过模块 v1.0 (开发版)")
     print("=" * 60)
-    print(f"目标应用: {args.package}")
+    print(f"target application: {args.package}")
     print(f"开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
     
@@ -1101,23 +1080,23 @@ def main():
         print("=" * 60)
         
         if success:
-            print(f"✅ 反调试绕过流程执行完成: {args.package}")
-            print(f"📁 结果文件: {bypass.save_results()}")
+            print(f"✅ 反Debug绕过流程执行完成: {args.package}")
+            print(f"📁 结果file: {bypass.save_results()}")
             print()
             print("💡 下一步:")
-            print("  1. 保持当前终端会话（Frida进程正在运行）")
+            print("  1. 保持当前终端会话（Fridaprocess正在运行）")
             print("  2. 在另一个终端执行脱壳命令:")
             print(f"     frida-dexdump -U -p {bypass.results.get('injection_pid', '<PID>')} -o ./output/")
             print("  3. 或使用增强版脱壳技能:")
             print(f"     ./scripts/android-armor-breaker --package {args.package} --output ./output/")
         else:
-            print(f"❌ 反调试绕过失败: {args.package}")
-            print(f"📁 结果文件: {bypass.save_results()}")
+            print(f"❌ 反Debug绕过Failed: {args.package}")
+            print(f"📁 结果file: {bypass.save_results()}")
             print()
             print("💡 建议:")
-            print("  1. 检查应用是否具有特殊的保护机制")
-            print("  2. 尝试调整延迟时间（修改配置文件）")
-            print("  3. 考虑使用其他脱壳方法")
+            print("  1. 检查application是否具有特殊的保护机制")
+            print("  2. 尝试调整延迟时间（修改配置file）")
+            print("  3. 考虑使用其他脱壳method")
         
         return 0 if success else 1
         
@@ -1125,7 +1104,7 @@ def main():
         print("\n⚠️  用户中断")
         return 130
     except Exception as e:
-        print(f"\n❌ 致命错误: {e}")
+        print(f"\n❌ 致命Error: {e}")
         import traceback
         traceback.print_exc()
         return 1
