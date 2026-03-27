@@ -2,9 +2,10 @@
   "version": 1,
   "registry": "https://clawhub.ai",
   "slug": "android-armor-breaker",
-  "installedVersion": "1.1.0",
+  "installedVersion": "1.1.1",
   "installedAt": 1774255873120,
   "updatedAt": 1774255873120,
   "internationalization": true,
-  "notes": "Updated to internationalized version 1.1.0 with full English documentation"
+  "english_completeness": "100%",
+  "notes": "Updated to fully internationalized version 1.1.1 with 100% English scripts and documentation"
 }
