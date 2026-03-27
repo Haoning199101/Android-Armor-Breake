@@ -6,7 +6,7 @@
   "installedAt": 1774255873120,
   "updatedAt": 1774608130902,
   "internationalization": true,
-  "english_completeness": "85%",
+  "english_completeness": "90%",
   "expected_files": [
     ".clawhub/origin.json",
     ".gitignore", 
@@ -16,11 +16,10 @@
     "SKILL.md",
     "scripts/android-armor-breaker",
     "scripts/android-armor-breaker.py",
-    "scripts/android-armor-breaker.sh",
     "scripts/antidebug_bypass.py",
     "scripts/apk_protection_analyzer.py",
     "scripts/enhanced_dexdump_runner.py"
   ],
   "primary_entry_point": "scripts/android-armor-breaker.py",
-  "notes": "Version 1.1.5: Complete internationalization of skill (English documentation, UI, and core outputs). Bash script is main entry, Python wrapper for compatibility."
+  "notes": "Version 1.1.5: Complete internationalization of skill (English documentation, UI, and core outputs). Removed redundant .sh file, cleaned up unnecessary files. Bash script is main entry, Python wrapper for compatibility."
 }
