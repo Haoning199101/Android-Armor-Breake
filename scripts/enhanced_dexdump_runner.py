@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-针对新百度Reinforcement等商业Reinforcement方案，实现DEXFile的完整动态Unpacking
+针对新百度reinforcement等商业reinforcement方案，实现DEXfile的完整动态Unpacking
 """
 
 import os
@@ -17,7 +17,7 @@ from datetime import datetime
 from typing import List, Dict, Optional, Tuple, Set
 
 class EnhancedDexDumpRunner:
-    """增强版Unpacking执行器 - 针对新百度ReinforcementOptimizing"""
+    """增强版Unpacking执行器 - 针对新百度reinforcementOptimizing"""
     
     def __init__(self, verbose: bool = False, max_attempts: int = 3, deep_search: bool = False, 
                  bypass_antidebug: bool = False):
@@ -25,7 +25,7 @@ class EnhancedDexDumpRunner:
         self.max_attempts = max_attempts  # 最大尝试次数
         self.deep_search = deep_search    # 是否启用深度搜索模式
         self.bypass_antidebug = bypass_antidebug  # 是否启用anti-debugBypass
-        self.all_dex_files = []  # 收集所有DEXFileInformation（去重）
+        self.all_dex_files = []  # 收集所有DEXfileInformation（去重）
         self.execution_log = []  # 执行Log
         self.start_time = None
         self.end_time = None
@@ -92,8 +92,8 @@ class EnhancedDexDumpRunner:
                 self.log("DeviceStatusException", "ERROR")
                 return False
                 
-        except subprocess.TimeoutExpired:
-            self.log("ADBDevice检查Timeout（10秒）", "ERROR")
+        except subprocess.timeoutExpired:
+            self.log("ADBDevice检查timeout（10秒）", "ERROR")
             self.log("Please checkUSB连接和Device授权Status", "WARNING")
             return False
         except Exception as e:
@@ -109,8 +109,8 @@ class EnhancedDexDumpRunner:
                 self.log("Please ensureDevice上已运行 frida-server (需要root权限)", "WARNING")
             else:
                 self.log("FridaService运行正常", "SUCCESS")
-        except subprocess.TimeoutExpired:
-            self.log("FridaService检查Timeout", "WARNING")
+        except subprocess.timeoutExpired:
+            self.log("FridaService检查timeout", "WARNING")
         except Exception as e:
             self.log(f"检查FridaServiceFailed: {e}", "WARNING")
         
@@ -130,8 +130,8 @@ class EnhancedDexDumpRunner:
                 self.log(f"未找到Application '{package_name}'", "ERROR")
                 self.log("使用 'adb shell pm list packages' 查看所有已InstallingApplication", "WARNING")
                 return False
-        except subprocess.TimeoutExpired:
-            self.log(f"检查ApplicationInstallingStatusTimeout（10秒）", "ERROR")
+        except subprocess.timeoutExpired:
+            self.log(f"检查ApplicationInstallingStatustimeout（10秒）", "ERROR")
             self.log("ADB连接可能不稳定或Device无响应", "WARNING")
             return False
         except Exception as e:
@@ -217,15 +217,15 @@ class EnhancedDexDumpRunner:
         return True
     
     def parse_dexdump_output(self, line: str) -> Optional[Dict]:
-        """解析frida-dexdumpOutput，提取DEXFileInformation"""
-        # 匹配模式: [+] DexMd5=..., SavePath=..., DexSize=...
-        pattern = r'\[\+\] DexMd5=([0-9a-f]+),\s+SavePath=([^,]+),\s+DexSize=([0-9a-fx]+)'
+        """解析frida-dexdumpOutput，提取DEXfileInformation"""
+        # 匹配模式: [+] DexMd5=..., SavePath=..., Dexsize=...
+        pattern = r'\[\+\] DexMd5=([0-9a-f]+),\s+SavePath=([^,]+),\s+Dexsize=([0-9a-fx]+)'
         match = re.search(pattern, line)
         
         if match:
             dex_md5, save_path, dex_size = match.groups()
             
-            # 转换十六进制Size为十进制字节数
+            # 转换十六进制size为十进制字节数
             try:
                 size_bytes = int(dex_size, 16)
                 size_kb = size_bytes / 1024
@@ -242,7 +242,7 @@ class EnhancedDexDumpRunner:
                 
                 return dex_info
             except ValueError:
-                self.log(f"无法解析DEXSize: {dex_size}", "WARNING")
+                self.log(f"无法解析DEXsize: {dex_size}", "WARNING")
         
         return None
     
@@ -293,17 +293,17 @@ class EnhancedDexDumpRunner:
         if self.deep_search:
             cmd.append('-d')
             self.log("启用深度搜索模式 (-d Parameter)", "SUCCESS")
-            self.log("深度搜索模式将进行更彻底的Memory扫描，可能发现更多DEXFile", "INFO")
+            self.log("Deep search mode will perform more thorough memory scanning，可能发现更多DEXfile", "INFO")
         
         self.log(f"执行命令: {' '.join(cmd)}", "DEBUG")
         
         dex_files = []
         
         try:
-            # 使用subprocess.run，SettingsTimeout避免无限Waiting
-            self.log("frida-dexdump Process已Starting，开始执行（Timeout180秒）...")
+            # 使用subprocess.run，Settingstimeout避免无限Waiting
+            self.log("frida-dexdump Process已Starting，开始执行（timeout180秒）...")
             
-            # Recording开始Time
+            # Recording开始time
             start_time = time.time()
             timeout_seconds = 180
             
@@ -323,30 +323,30 @@ class EnhancedDexDumpRunner:
                 if not line:
                     continue
                 
-                # 解析DEXFileInformation
+                # 解析DEXfileInformation
                 dex_info = self.parse_dexdump_output(line)
                 if dex_info:
                     dex_files.append(dex_info)
-                    # 显示发现的File
+                    # 显示发现的file
                     size_str = f"{dex_info['size_kb']:.1f}KB"
                     if dex_info['size_mb'] >= 0.1:
                         size_str = f"{dex_info['size_mb']:.2f}MB"
                     
-                    self.log(f"发现DEXFile: {Path(dex_info['path']).name} ({size_str})", "SUCCESS")
+                    self.log(f"Found DEX file: {Path(dex_info['path']).name} ({size_str})", "SUCCESS")
                 
                 # 显示ProgressInformation
                 elif "Searching..." in line:
-                    self.log("正在搜索Memory中的DEXFile...")
+                    self.log("正在搜索Memory中的DEXfile...")
                 elif "Successful found" in line:
                     # 提取找到的DEX数量
                     match = re.search(r'found (\d+) dex', line)
                     if match:
                         count = match.group(1)
-                        self.log(f"找到 {count} 个DEXFile", "SUCCESS")
+                        self.log(f"找到 {count} 个DEXfile", "SUCCESS")
                 elif "Starting dump" in line:
-                    self.log("开始提取DEXFile...")
+                    self.log("开始提取DEXfile...")
                 elif "All done" in line:
-                    self.log("DEXFile提取完成", "SUCCESS")
+                    self.log("DEXfile提取完成", "SUCCESS")
                 elif "Error" in line or "ERROR" in line:
                     self.log(f"Error: {line}", "ERROR")
                 elif self.verbose:
@@ -366,8 +366,8 @@ class EnhancedDexDumpRunner:
             return False, dex_files
     
     def merge_dex_files(self, all_dex_lists: List[List[Dict]]) -> List[Dict]:
-        """合并多次Unpacking的Result，去重"""
-        self.log("合并多次UnpackingResult...")
+        """合并多次Unpacking的result，去重"""
+        self.log("合并多次Unpackingresult...")
         
         # 使用MD5作为唯一标识去重
         unique_dex_files = {}
@@ -385,7 +385,7 @@ class EnhancedDexDumpRunner:
                             unique_dex_files[md5] = dex_info
         
         merged_list = list(unique_dex_files.values())
-        self.log(f"合并后共 {len(merged_list)} 个唯一DEXFile", "SUCCESS")
+        self.log(f"合并后共 {len(merged_list)} 个唯一DEXfile", "SUCCESS")
         
         return merged_list
     
@@ -398,9 +398,9 @@ class EnhancedDexDumpRunner:
             self.log(f"第 {attempt}/{self.max_attempts} 次Unpacking尝试")
             self.log(f"{'='*40}")
             
-            # 每次尝试前Waiting一段Time
+            # 每次尝试前Waiting一段time
             if attempt > 1:
-                wait_time = 30 * attempt  # 递增WaitingTime
+                wait_time = 30 * attempt  # 递增Waitingtime
                 self.log(f"Waiting {wait_time} 秒后再次尝试...")
                 time.sleep(wait_time)
                 
@@ -411,11 +411,11 @@ class EnhancedDexDumpRunner:
             
             if success and dex_files:
                 all_dex_lists.append(dex_files)
-                self.log(f"第 {attempt} 次Unpacking获得 {len(dex_files)} 个DEXFile")
+                self.log(f"第 {attempt} 次Unpacking获得 {len(dex_files)} 个DEXfile")
             else:
-                self.log(f"第 {attempt} 次Unpacking未获得DEXFile", "WARNING")
+                self.log(f"第 {attempt} 次Unpacking未获得DEXfile", "WARNING")
         
-        # 合并Result
+        # 合并result
         if all_dex_lists:
             merged_dex_files = self.merge_dex_files(all_dex_lists)
             return True, merged_dex_files
@@ -427,7 +427,7 @@ class EnhancedDexDumpRunner:
 
     
     def _get_expected_md5(self, dex_filename: str) -> Optional[str]:
-        """从已收集的DEXFileInformation中获取期望的MD5值"""
+        """从已收集的DEXfileInformation中获取期望的MD5值"""
         for dex_info in self.all_dex_files:
             if Path(dex_info['path']).name == dex_filename:
                 return dex_info['md5']
@@ -435,7 +435,7 @@ class EnhancedDexDumpRunner:
     
     def _verify_dex_complete(self, dex_path: Path, expected_md5: str = None) -> Dict:
         """
-        完整的DEXFileVerification
+        完整的DEXfileVerification
         包括CRC32、SHA-1、MD5和DEX结构Verification
         """
         results = {
@@ -454,27 +454,27 @@ class EnhancedDexDumpRunner:
         }
         
         try:
-            # Reading整个File
+            # Reading整个file
             with open(dex_path, 'rb') as f:
                 data = f.read()
             
             results['file_size'] = len(data)
             
-            # 检查1: 最小FileSize
-            if len(data) >= 0x24:  # 至少需要36字节的DEXFile头
-                results['checks'].append({'check': 'min_size', 'result': 'PASS', 'message': f"FileSize足够: {len(data)} 字节"})
+            # 检查1: 最小filesize
+            if len(data) >= 0x24:  # 至少需要36字节的DEXfile头
+                results['checks'].append({'check': 'min_size', 'result': 'PASS', 'message': f"filesize足够: {len(data)} 字节"})
             else:
-                results['checks'].append({'check': 'min_size', 'result': 'FAIL', 'message': f"FileSize不足: {len(data)} 字节（需要至少36字节）"})
+                results['checks'].append({'check': 'min_size', 'result': 'FAIL', 'message': f"filesize不足: {len(data)} 字节（需要至少36字节）"})
                 return results
             
-            # 检查2: DEXFile头魔数
+            # 检查2: DEXfile头魔数
             magic = data[0:4]
             results['magic'] = magic.hex()
             
             if magic in [b'dex\n', b'dey\n']:
-                results['checks'].append({'check': 'magic', 'result': 'PASS', 'message': f"DEXFile头: {magic.decode('ascii', errors='replace')}"})
+                results['checks'].append({'check': 'magic', 'result': 'PASS', 'message': f"DEXfile头: {magic.decode('ascii', errors='replace')}"})
             else:
-                results['checks'].append({'check': 'magic', 'result': 'FAIL', 'message': f"无效的DEXFile头: 0x{magic.hex()}"})
+                results['checks'].append({'check': 'magic', 'result': 'FAIL', 'message': f"无效的DEXfile头: 0x{magic.hex()}"})
                 return results
             
             # 检查3: Version号
@@ -485,11 +485,11 @@ class EnhancedDexDumpRunner:
             
             # 检查4: CRC32校验（偏移0x8）
             if len(data) >= 12:
-                # 提取File头中的CRC32（小端序）
+                # 提取file头中的CRC32（小端序）
                 expected_crc32 = struct.unpack('<I', data[8:12])[0]
                 
-                # 计算实际CRC32（从偏移0x12开始到File末尾）
-                # Note：根据DEX格式规范，CRC32计算从File头偏移0x12开始
+                # 计算实际CRC32（从偏移0x12开始到file末尾）
+                # Note：根据DEX格式规范，CRC32计算从file头偏移0x12开始
                 actual_crc32 = zlib.crc32(data[12:]) & 0xffffffff
                 
                 results['crc32_valid'] = expected_crc32 == actual_crc32
@@ -500,10 +500,10 @@ class EnhancedDexDumpRunner:
             
             # 检查5: SHA-1签名Verification（偏移0xC，20字节）
             if len(data) >= 32:
-                # 提取File头中的SHA-1（20字节）
+                # 提取file头中的SHA-1（20字节）
                 expected_sha1 = data[12:32]
                 
-                # 计算实际SHA-1（从偏移0x20开始到File末尾）
+                # 计算实际SHA-1（从偏移0x20开始到file末尾）
                 actual_sha1 = hashlib.sha1(data[32:]).digest()
                 
                 results['sha1_valid'] = expected_sha1 == actual_sha1
@@ -512,14 +512,14 @@ class EnhancedDexDumpRunner:
                 else:
                     results['checks'].append({'check': 'sha1', 'result': 'FAIL', 'message': f"SHA-1签名VerificationFailed"})
             
-            # 检查6: FileSize字段Verification（偏移0x20）
+            # 检查6: filesize字段Verification（偏移0x20）
             if len(data) >= 0x24:
                 expected_size = struct.unpack('<I', data[0x20:0x24])[0]
                 size_valid = expected_size == len(data)
                 if size_valid:
-                    results['checks'].append({'check': 'file_size_field', 'result': 'PASS', 'message': f"FileSize字段正确: {expected_size} 字节"})
+                    results['checks'].append({'check': 'file_size_field', 'result': 'PASS', 'message': f"filesize字段正确: {expected_size} 字节"})
                 else:
-                    results['checks'].append({'check': 'file_size_field', 'result': 'FAIL', 'message': f"FileSize字段不匹配: 期望{expected_size}, 实际{len(data)}"})
+                    results['checks'].append({'check': 'file_size_field', 'result': 'FAIL', 'message': f"filesize字段不匹配: 期望{expected_size}, 实际{len(data)}"})
             
             # 检查7: MD5Verification
             actual_md5 = hashlib.md5(data).hexdigest()
@@ -535,12 +535,12 @@ class EnhancedDexDumpRunner:
                 results['checks'].append({'check': 'md5', 'result': 'INFO', 'message': f"计算MD5: {actual_md5}"})
             
             # 检查8: DEX基本结构Verification
-            # VerificationFile头中的各个偏移量是否在File范围内
+            # Verificationfile头中的各个偏移量是否在file范围内
             dex_structure_ok = True
             dex_structure_messages = []
             
-            if len(data) >= 0x70:  # 足够Reading所有File头Information
-                # Reading各个表的Size和偏移
+            if len(data) >= 0x70:  # 足够Reading所有file头Information
+                # Reading各个表的size和偏移
                 try:
                     string_ids_size = struct.unpack('<I', data[0x38:0x3c])[0]
                     string_ids_off = struct.unpack('<I', data[0x3c:0x40])[0]
@@ -548,16 +548,16 @@ class EnhancedDexDumpRunner:
                     type_ids_size = struct.unpack('<I', data[0x40:0x44])[0]
                     type_ids_off = struct.unpack('<I', data[0x44:0x48])[0]
                     
-                    # 检查偏移是否在File范围内
+                    # 检查偏移是否在file范围内
                     if string_ids_off + string_ids_size * 4 > len(data):
                         dex_structure_ok = False
-                        dex_structure_messages.append(f"字符串表超出File范围")
+                        dex_structure_messages.append(f"字符串表超出file范围")
                     else:
                         dex_structure_messages.append(f"字符串表: {string_ids_size} 项")
                     
                     if type_ids_off + type_ids_size * 4 > len(data):
                         dex_structure_ok = False
-                        dex_structure_messages.append(f"类型表超出File范围")
+                        dex_structure_messages.append(f"类型表超出file范围")
                     else:
                         dex_structure_messages.append(f"类型表: {type_ids_size} 项")
                 
@@ -588,8 +588,8 @@ class EnhancedDexDumpRunner:
             return results
     
     def verify_dex_integrity(self, output_dir: str) -> Dict:
-        """VerificationDEXFile完整性"""
-        self.log("开始VerificationDEXFile完整性...")
+        """VerificationDEXfile完整性"""
+        self.log("开始VerificationDEXfile完整性...")
         
         output_path = Path(output_dir)
         verification_results = {
@@ -599,20 +599,20 @@ class EnhancedDexDumpRunner:
             'details': []
         }
         
-        # 查找所有.dexFile
+        # 查找所有.dexfile
         dex_files = list(output_path.glob("*.dex"))
         verification_results['total_files'] = len(dex_files)
         
         if not dex_files:
-            self.log("未找到DEXFile", "WARNING")
+            self.log("未找到DEXfile", "WARNING")
             return verification_results
         
-        self.log(f"找到 {len(dex_files)} 个DEXFile进行Verification")
+        self.log(f"找到 {len(dex_files)} 个DEXfile进行Verification")
         
         # 特别检查dynamic loading的DEX（如baiduprotect*.dex）
         baidu_files = list(output_path.glob("baiduprotect*.dex"))
         if baidu_files:
-            self.log(f"发现 {len(baidu_files)} 个百度Protection相关DEXFile", "SUCCESS")
+            self.log(f"Found {len(baidu_files)} Baidu protection related DEX files", "SUCCESS")
         
         for dex_file in dex_files:
             # 获取期望的MD5值（如果已Recording）
@@ -621,7 +621,7 @@ class EnhancedDexDumpRunner:
             # 执行完整的DEXVerification
             complete_validation = self._verify_dex_complete(dex_file, expected_md5)
             
-            # 将完整VerificationResult转换为兼容格式
+            # 将完整Verificationresult转换为兼容格式
             file_info = {
                 'filename': dex_file.name,
                 'path': str(dex_file),
@@ -680,7 +680,7 @@ class EnhancedDexDumpRunner:
                 if cv.get('dex_structure_valid') is True:
                     structure_valid += 1
         
-        self.log(f"完整性Verification完成: {verification_results['valid_files']}/{verification_results['total_files']} 个File有效 ({success_rate:.1f}%)", "SUCCESS")
+        self.log(f"完整性Verification完成: {verification_results['valid_files']}/{verification_results['total_files']} 个file有效 ({success_rate:.1f}%)", "SUCCESS")
         self.log(f"📊 详细Verification统计:", "INFO")
         self.log(f"  - CRC32校验通过: {crc32_passed}/{verification_results['total_files']}", "INFO")
         self.log(f"  - SHA-1签名通过: {sha1_passed}/{verification_results['total_files']}", "INFO")
@@ -703,45 +703,45 @@ class EnhancedDexDumpRunner:
             # 添加搜索模式Information
             if self.deep_search:
                 f.write(f"- **搜索模式**: 深度搜索模式 (-dParameter)\n")
-                f.write(f"- **模式说明**: 针对新百度Reinforcement等强力Protection，可突破26个DEX限制\n")
+                f.write(f"- **模式说明**: 针对新百度reinforcement等强力protection，可突破26个DEX限制\n")
                 f.write(f"- **成功案例**: com.example.app 从26个突破到53个DEX\n")
             else:
                 f.write(f"- **搜索模式**: 普通搜索模式\n")
             
-            f.write(f"- **开始Time**: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write(f"- **结束Time**: {self.end_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"- **开始time**: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"- **结束time**: {self.end_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
             
             if self.start_time and self.end_time:
                 duration = (self.end_time - self.start_time).total_seconds()
                 f.write(f"- **执行耗时**: {duration:.1f} 秒\n")
             
-            # DEXFile统计
-            f.write("\n## DEXFile统计\n")
-            f.write(f"- **提取File数**: {len(dex_files)}\n")
+            # DEXfile统计
+            f.write("\n## DEXfile统计\n")
+            f.write(f"- **提取file数**: {len(dex_files)}\n")
             f.write(f"- **Verification有效数**: {verification_results['valid_files']}\n")
             f.write(f"- **Verification无效数**: {verification_results['invalid_files']}\n")
             
-            # FileSize分布
+            # filesize分布
             if dex_files:
                 total_size = sum(d['size_bytes'] for d in dex_files)
                 avg_size = total_size / len(dex_files) if len(dex_files) > 0 else 0
                 max_file = max(dex_files, key=lambda x: x['size_bytes']) if dex_files else None
                 min_file = min(dex_files, key=lambda x: x['size_bytes']) if dex_files else None
                 
-                f.write(f"- **总Size**: {total_size/1024/1024:.2f} MB\n")
-                f.write(f"- **平均Size**: {avg_size/1024:.2f} KB\n")
+                f.write(f"- **总size**: {total_size/1024/1024:.2f} MB\n")
+                f.write(f"- **平均size**: {avg_size/1024:.2f} KB\n")
                 if max_file:
-                    f.write(f"- **最大File**: {Path(max_file['path']).name} ({max_file['size_bytes']/1024/1024:.2f} MB)\n")
+                    f.write(f"- **最大file**: {Path(max_file['path']).name} ({max_file['size_bytes']/1024/1024:.2f} MB)\n")
                 if min_file:
-                    f.write(f"- **最小File**: {Path(min_file['path']).name} ({min_file['size_bytes']} 字节)\n")
+                    f.write(f"- **最小file**: {Path(min_file['path']).name} ({min_file['size_bytes']} 字节)\n")
             
-            # File列表
+            # file列表
             if dex_files:
-                f.write("\n## 提取的DEXFile\n")
-                f.write("| File名 | Size | MD5 | Status |\n")
+                f.write("\n## 提取的DEXfile\n")
+                f.write("| file名 | size | MD5 | Status |\n")
                 f.write("|--------|------|-----|------|\n")
                 
-                # 按File名排序
+                # 按file名排序
                 sorted_dex = sorted(dex_files, key=lambda x: Path(x['path']).name)
                 
                 for dex_info in sorted_dex:
@@ -786,13 +786,13 @@ class EnhancedDexDumpRunner:
             f.write(f"- **MD5匹配Verification**: {md5_matched}/{verification_results['total_files']}\n")
             f.write(f"- **DEX结构有效**: {structure_valid}/{verification_results['total_files']}\n")
             
-            # 各个FileVerificationDetails
+            # 各个fileVerificationDetails
             for detail in verification_results['details']:
                 f.write(f"\n### {detail['filename']}\n")
-                f.write(f"- **FileSize**: {detail['size_bytes']} 字节\n")
+                f.write(f"- **filesize**: {detail['size_bytes']} 字节\n")
                 f.write(f"- **VerificationStatus**: {'✅ 有效' if detail['is_valid'] else '❌ 无效'}\n")
                 
-                # 显示完整VerificationResult（如果有）
+                # 显示完整Verificationresult（如果有）
                 if 'complete_validation' in detail:
                     cv = detail['complete_validation']
                     f.write("- **完整VerificationInformation**:\n")
@@ -834,17 +834,17 @@ class EnhancedDexDumpRunner:
         """增强版Unpacking主执行流程"""
         self.log("=" * 60)
         self.log("增强版Unpacking执行器 - 基于文档Description的完整方案")
-        self.log("针对新百度Reinforcement等商业ReinforcementOptimizing")
+        self.log("针对新百度reinforcement等商业reinforcementOptimizing")
         
         # 显示模式Information
         mode_info = "普通模式"
         if self.deep_search:
             mode_info = "深度搜索模式 (-dParameter)"
-            self.log(f"📊 模式: {mode_info} - 针对新百度Reinforcement等强力Protection")
+            self.log(f"📊 模式: {mode_info} - 针对新百度reinforcement等强力protection")
             self.log("💡 经验: 可突破26个DEX限制，完整获取53个DEX")
             self.log("💡 案例: com.example.app 从26个突破到53个DEX")
         else:
-            self.log(f"📊 模式: {mode_info} - 普通商业Reinforcement")
+            self.log(f"📊 模式: {mode_info} - 普通商业reinforcement")
         
         self.log("=" * 60)
         
@@ -877,7 +877,7 @@ class EnhancedDexDumpRunner:
         # 如果FridaUnpackingFailed，直接返回Failed
         if not success:
             self.log("FridaUnpackingFailed，专注FridaDebugging模式结束", "ERROR")
-            self.log("FailedAnalysis:", "INFO")
+            self.log("Failedanalysis:", "INFO")
             self.log("1. 检查Application是否正常运行且无强Anti-debug", "INFO")
             self.log("2. 检查Frida-server是否正常运行且已Hiding特征", "INFO")
             self.log("3. 尝试不同的ApplicationStarting时机和注入策略", "INFO")
@@ -896,35 +896,35 @@ class EnhancedDexDumpRunner:
         # 8. 最终Summary
         self.log("=" * 60)
         self.log("增强版Unpacking任务完成!", "SUCCESS")
-        self.log(f"- 提取DEXFile: {len(all_dex_files)} 个")
-        self.log(f"- 有效DEXFile: {verification_results['valid_files']} 个")
-        self.log(f"- 百度ProtectionDEX: {len([f for f in all_dex_files if 'baiduprotect' in Path(f['path']).name.lower()])} 个")
+        self.log(f"- 提取DEXfile: {len(all_dex_files)} 个")
+        self.log(f"- 有效DEXfile: {verification_results['valid_files']} 个")
+        self.log(f"- 百度protectionDEX: {len([f for f in all_dex_files if 'baiduprotect' in Path(f['path']).name.lower()])} 个")
         self.log(f"- 详细Report: {report_path}")
         
-        # UnpackingResultSummary
+        # UnpackingresultSummary
         actual_count = len(all_dex_files)
-        self.log(f"- 动态获取: {actual_count} 个DEXFile")
+        self.log(f"- 动态获取: {actual_count} 个DEXfile")
         
-        # 深度搜索模式Result评估
+        # 深度搜索模式result评估
         if self.deep_search:
             if actual_count >= 53:
-                self.log(f"✅ 深度搜索成功! 获得 {actual_count} 个DEXFile (超过53个)", "SUCCESS")
-                self.log(f"💡 说明: 已突破新百度Reinforcement的26个DEX限制", "INFO")
+                self.log(f"✅ 深度搜索成功! 获得 {actual_count} 个DEXfile (超过53个)", "SUCCESS")
+                self.log(f"💡 说明: 已突破新百度reinforcement的26个DEX限制", "INFO")
             elif actual_count >= 26:
-                self.log(f"⚠️  深度搜索部分成功: 获得 {actual_count} 个DEXFile", "WARNING")
-                self.log(f"💡 说明: 突破了普通模式限制，但可能仍有未发现的DEX", "INFO")
+                self.log(f"⚠️  深度搜索部分成功: 获得 {actual_count} 个DEXfile", "WARNING")
+                self.log(f"💡 说明: Broke through normal mode limits, but there may still be undiscovered DEX", "INFO")
             else:
-                self.log(f"❌ 深度搜索效果不佳: 仅获得 {actual_count} 个DEXFile", "ERROR")
-                self.log(f"💡 Recommendation: 尝试增加WaitingTime、多次尝试或检查Anti-debug机制", "INFO")
+                self.log(f"❌ 深度搜索效果不佳: 仅获得 {actual_count} 个DEXfile", "ERROR")
+                self.log(f"💡 Recommendation: 尝试增加Waitingtime、多次尝试或检查Anti-debug机制", "INFO")
         else:
             # 普通模式评估
             if actual_count >= 26:
-                self.log(f"✅ 普通模式成功: 获得 {actual_count} 个DEXFile", "SUCCESS")
+                self.log(f"✅ 普通模式成功: 获得 {actual_count} 个DEXfile", "SUCCESS")
             elif actual_count >= 10:
-                self.log(f"⚠️  普通模式部分成功: 获得 {actual_count} 个DEXFile", "WARNING")
-                self.log(f"💡 Recommendation: 如需更多DEXFile，请尝试 --deep-search Parameter", "INFO")
+                self.log(f"⚠️  普通模式部分成功: 获得 {actual_count} 个DEXfile", "WARNING")
+                self.log(f"💡 Recommendation: 如需更多DEXfile，请尝试 --deep-search Parameter", "INFO")
             else:
-                self.log(f"❌ 普通模式效果不佳: 仅获得 {actual_count} 个DEXFile", "ERROR")
+                self.log(f"❌ 普通模式效果不佳: 仅获得 {actual_count} 个DEXfile", "ERROR")
                 self.log(f"💡 Recommendation: 请尝试 --deep-search Parameter或检查EnvironmentConfiguration", "INFO")
         
         self.log("=" * 60)
@@ -935,12 +935,12 @@ def main():
     """命令行入口"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='增强版Unpacking执行器 - 针对新百度ReinforcementOptimizing')
+    parser = argparse.ArgumentParser(description='增强版Unpacking执行器 - 针对新百度reinforcementOptimizing')
     parser.add_argument('--package', '-p', required=True, help='AndroidApplicationPackage name')
     parser.add_argument('--output', '-o', default='./enhanced_dex_output', help='OutputDirectory (默认: ./enhanced_dex_output)')
     parser.add_argument('--attempts', '-a', type=int, default=3, help='Unpacking尝试次数 (默认: 3)')
-    parser.add_argument('--deep-search', '-d', action='store_true', help='启用深度搜索模式 (针对新百度Reinforcement等强力Protection)')
-    parser.add_argument('--bypass-antidebug', '-b', action='store_true', help='启用Anti-debugBypass（针对强力Anti-debugProtection）')
+    parser.add_argument('--deep-search', '-d', action='store_true', help='启用深度搜索模式 (针对新百度reinforcement等强力protection)')
+    parser.add_argument('--bypass-antidebug', '-b', action='store_true', help='启用Anti-debugBypass（针对强力Anti-debugprotection）')
     parser.add_argument('--verbose', '-v', action='store_true', help='详细Output模式')
     
     args = parser.parse_args()

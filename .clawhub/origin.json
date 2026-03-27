@@ -2,11 +2,11 @@
   "version": 1,
   "registry": "https://clawhub.ai",
   "slug": "android-armor-breaker",
-  "installedVersion": "1.1.6",
+  "installedVersion": "1.1.7",
   "installedAt": 1774255873120,
-  "updatedAt": 1774608731219,
+  "updatedAt": 1774609172202,
   "internationalization": true,
-  "english_completeness": "90%",
+  "english_completeness": "95%",
   "expected_files": [
     ".clawhub/origin.json",
     ".gitignore", 
@@ -21,5 +21,5 @@
     "scripts/enhanced_dexdump_runner.py"
   ],
   "primary_entry_point": "scripts/android-armor-breaker.py",
-  "notes": "Version 1.1.6: Cleanup release - removed redundant .sh file, updated metadata. Complete internationalization with English documentation, UI, and core outputs. Bash script is main entry, Python wrapper for compatibility."
+  "notes": "Version 1.1.7: Fixed mixed Chinese-English output messages, improved translation quality. Fixed zipfile.ZipFile capitalization bug. Complete internationalization with consistent English output."
 }

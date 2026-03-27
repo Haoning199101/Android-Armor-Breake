@@ -35,25 +35,25 @@ class AntiDebugBypass:
         return {
             "bypass_techniques": {
                 "frida_deep_hide": True,      # Frida深度Hiding
-                "memory_scan_defense": True,   # Memory扫描对抗
+                "memory_scan_defense": True,   # Memory scanning对抗
                 "system_call_hooks": True,     # System调用Hook增强
                 "java_anti_debug": True,       # Java层anti-debugHook
-                "timing_bypass": True,         # Time差DetectionBypass
+                "timing_bypass": True,         # time差DetectionBypass
                 "multi_layer_defense": True,   # 多层Defense
             },
             "frida_config": {
-                "delay_injection_ms": 10000,   # 10秒延迟注入，给Application更多initializeTime
+                "delay_injection_ms": 10000,   # 10秒延迟注入，给Application更多initializetime
                 "staged_injection": True,      # 分阶段注入
                 "heartbeat_interval": 25000,   # 25秒心跳，带随机偏移
-                "randomize_timing": True,      # 随机化Time间隔
+                "randomize_timing": True,      # 随机化time间隔
             },
             "hook_config": {
                 "hook_debug_check": True,      # Debugging检查Hook
                 "hook_system_exit": True,      # System退出Hook
                 "hook_ptrace": True,           # ptrace Hook
-                "hook_file_access": True,      # File访问Hook
+                "hook_file_access": True,      # file访问Hook
                 "hook_memory_access": True,    # Memory访问Hook（新增）
-                "hook_time_functions": True,   # Time函数Hook（新增）
+                "hook_time_functions": True,   # time函数Hook（新增）
                 "hook_system_calls": True,     # System调用Hook（新增）
             },
             "detection_config": {
@@ -149,8 +149,8 @@ class AntiDebugBypass:
         
         js_code = f"""// anti-debugBypassScript v2.0 - 多层反Detection增强版
 // 目标Package name: {package_name}
-// 生成Time: {datetime.now().isoformat()}
-// Feature: Frida深度Hiding + Memory扫描对抗 + System调用Hook + Time差DetectionBypass
+// 生成time: {datetime.now().isoformat()}
+// Feature: Frida深度Hiding + Memory scanning对抗 + System调用Hook + time差DetectionBypass
 
 Java.perform(function() {{
     console.log("[🛡️] 增强版anti-debugBypassScript加载");
@@ -277,10 +277,10 @@ Java.perform(function() {{
         console.log("[✅] Frida深度Hiding完成");
     }}
     
-    // ============ 第2层: Memory扫描对抗 ============
+    // ============ 第2层: Memory scanning对抗 ============
     
     function applyMemoryScanDefense() {{
-        console.log("[🛡️] ApplicationMemory扫描对抗...");
+        console.log("[🛡️] ApplicationMemory scanning对抗...");
         
         // 2.1 Monitoring/proc/self/maps访问
         var procAccessFunctions = ["open", "openat", "__openat", "fopen", "fopen64"];
@@ -297,7 +297,7 @@ Java.perform(function() {{
                                     if (path && (path.includes("/proc/self/maps") || 
                                                  path.includes("/proc/self/mem") ||
                                                  path.includes("/proc/self/pagemap"))) {{
-                                        console.log("[Memory-Defense] 拦截MemoryFile访问: " + path);
+                                        console.log("[Memory-Defense] 拦截Memoryfile访问: " + path);
                                         this.shouldBlock = true;
                                         bypassInfo.hooks_applied.memory_file_blocked = true;
                                         bypassInfo.detection_bypassed++;
@@ -317,7 +317,7 @@ Java.perform(function() {{
             }} catch (e) {{ console.log("[❌] Hook " + funcName + " Failed: " + e); }}
         }});
         
-        // 2.2 Hook ptrace - 防止Memory扫描
+        // 2.2 Hook ptrace - 防止Memory scanning
         var ptraceAddr = Module.findExportByName(null, "ptrace");
         if (ptraceAddr) {{
             Interceptor.attach(ptraceAddr, {{
@@ -377,7 +377,7 @@ Java.perform(function() {{
         }} catch (e) {{ console.log("[❌] TracerPidFixingFailed: " + e); }}
         
         bypassInfo.techniques_applied.push("memory_scan_defense");
-        console.log("[✅] Memory扫描对抗完成");
+        console.log("[✅] Memory scanning对抗完成");
     }}
     
     // ============ 第3层: System调用Hook增强 ============
@@ -389,7 +389,7 @@ Java.perform(function() {{
         var criticalSyscalls = [
             // ProcessDebugging相关
             "__ptrace", "waitpid", "kill", 
-            // File访问相关  
+            // file访问相关  
             "access", "stat", "fstat", "lstat",
             // Memory相关
             "mprotect", "mmap", "munmap"
@@ -410,7 +410,7 @@ Java.perform(function() {{
             }} catch (e) {{ console.log("[❌] Monitoring " + syscallName + " Failed: " + e); }}
         }});
         
-        // 3.2 Time相关函数Hook - BypassTime差Detection
+        // 3.2 time相关函数Hook - Bypasstime差Detection
         var timeFunctions = ["clock_gettime", "gettimeofday", "time"];
         timeFunctions.forEach(function(timeFunc) {{
             try {{
@@ -418,17 +418,17 @@ Java.perform(function() {{
                 if (funcAddr) {{
                     Interceptor.attach(funcAddr, {{
                         onEnter: function(args) {{
-                            this.startTime = Date.now();
+                            this.starttime = Date.now();
                             bypassInfo.hooks_applied[timeFunc + "_monitored"] = true;
                         }},
                         onLeave: function(retval) {{
-                            if (this.startTime) {{
-                                var elapsed = Date.now() - this.startTime;
+                            if (this.starttime) {{
+                                var elapsed = Date.now() - this.starttime;
                                 // 如果调用太快（可能是在DetectionDebugger），添加随机延迟
                                 if (elapsed < 10) {{
                                     var randomDelay = Math.random() * 50; // 0-50ms随机延迟
                                     Thread.sleep(randomDelay / 1000);
-                                    console.log("[Time-Bypass] 添加 " + randomDelay.toFixed(2) + "ms 延迟对抗TimeDetection");
+                                    console.log("[time-Bypass] 添加 " + randomDelay.toFixed(2) + "ms 延迟对抗timeDetection");
                                     bypassInfo.hooks_applied.time_delay_added = true;
                                     bypassInfo.detection_bypassed++;
                                 }}
@@ -570,8 +570,8 @@ Java.perform(function() {{
     // Application第1层: Frida深度Hiding
     try {{ applyFridaDeepHide(); }} catch (e) {{ console.log("[❌] Frida深度HidingException: " + e); }}
     
-    // Application第2层: Memory扫描对抗
-    try {{ applyMemoryScanDefense(); }} catch (e) {{ console.log("[❌] Memory扫描对抗Exception: " + e); }}
+    // Application第2层: Memory scanning对抗
+    try {{ applyMemoryScanDefense(); }} catch (e) {{ console.log("[❌] Memory scanning对抗Exception: " + e); }}
     
     // Application第3层: System调用Hook增强
     try {{ applySystemCallHooks(); }} catch (e) {{ console.log("[❌] System调用HookException: " + e); }}
@@ -603,7 +603,7 @@ Java.perform(function() {{
         }};
         send(heartbeat);
         
-        // 随机Time间隔，避免规律性Detection
+        // 随机time间隔，避免规律性Detection
         var randomInterval = {self.config['frida_config']['heartbeat_interval']} + Math.random() * 10000;
         return randomInterval;
     }}, {self.config['frida_config']['heartbeat_interval']});
@@ -615,7 +615,7 @@ Java.perform(function() {{
 console.log("[🔧] 增强版Native Hook引擎initialize...");
 """
         
-        # 保存ScriptFile
+        # 保存Scriptfile
         script_dir = Path.home() / ".frida_bypass_scripts"
         script_dir.mkdir(exist_ok=True)
         
@@ -729,7 +729,7 @@ console.log("[🔧] 增强版Native Hook引擎initialize...");
                 universal_newlines=True
             )
             
-            # Waiting更长Time
+            # Waiting更长time
             self.log("WaitingApplicationStarting和Script加载 (15秒)...")
             time.sleep(15)
             
@@ -796,7 +796,7 @@ console.log("[🔧] 增强版Native Hook引擎initialize...");
 Java.perform(function() {
     console.log("[Verification] 增强版VerificationScript执行");
     
-    var testResults = {
+    var testresults = {
         "java_hooks_working": false,
         "native_hooks_working": false,
         "frida_hidden": false,
@@ -809,7 +809,7 @@ Java.perform(function() {
         var isDebug = Debug.isDebuggerConnected();
         console.log("[Verification] Debug.isDebuggerConnected() = " + isDebug);
         if (isDebug === false) {
-            testResults.java_hooks_working = true;
+            testresults.java_hooks_working = true;
         }
     } catch(e) { console.log("[Verification] Java层TestingException: " + e); }
     
@@ -817,7 +817,7 @@ Java.perform(function() {
     try {
         var Module = Process.getModuleByName("libc.so");
         if (Module) {
-            testResults.native_hooks_working = true;
+            testresults.native_hooks_working = true;
         }
     } catch(e) { console.log("[Verification] Native层TestingException: " + e); }
     
@@ -826,14 +826,14 @@ Java.perform(function() {
         var hasFridaStrings = false;
         var memoryRegions = Process.enumerateRanges('r--');
         // 简化检查，只是象征性Testing
-        testResults.frida_hidden = true; // 假设Hiding成功
+        testresults.frida_hidden = true; // 假设Hiding成功
     } catch(e) { console.log("[Verification] FridaHidingTestingException: " + e); }
     
-    console.log("[Verification] Testing完成: " + JSON.stringify(testResults));
-    send({"verification": "enhanced", "results": testResults});
+    console.log("[Verification] Testing完成: " + JSON.stringify(testresults));
+    send({"verification": "enhanced", "results": testresults});
 });
 """
-            temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.js', delete=False)
+            temp_file = tempfile.NamedTemporaryfile(mode='w', suffix='.js', delete=False)
             temp_file.write(test_script)
             temp_file.close()
             
@@ -863,7 +863,7 @@ Java.perform(function() {
                     self.log("✅ Testing2: Frida注入成功", "SUCCESS")
                     verification_tests["frida_injection"] = True
                     
-                    # AnalysisOutput
+                    # analysisOutput
                     if "java_hooks_working" in result.stdout or "enhanced" in result.stdout:
                         self.log("✅ Testing2: 多层HookVerification通过", "SUCCESS")
                         verification_tests["hook_effectiveness"] = True
@@ -872,8 +872,8 @@ Java.perform(function() {
                     self.log(f"⚠️ Testing2: FridaScript执行Exception: {output_preview}", "WARNING")
             else:
                 self.log("❌ Testing2: 无有效PID", "WARNING")
-        except subprocess.TimeoutExpired:
-            self.log("✅ Testing2: FridaScript执行（Timeout但Process存活）", "SUCCESS")
+        except subprocess.timeoutExpired:
+            self.log("✅ Testing2: FridaScript执行（timeout但Process存活）", "SUCCESS")
             verification_tests["frida_injection"] = True
             verification_tests["hook_effectiveness"] = True  # 假设有效
         except Exception as e:
@@ -888,7 +888,7 @@ setInterval(function() {
     send({"heartbeat": new Date().toISOString()});
 }, 5000);
 """
-            temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.js', delete=False)
+            temp_file = tempfile.NamedTemporaryfile(mode='w', suffix='.js', delete=False)
             temp_file.write(stability_check_script)
             temp_file.close()
             
@@ -936,7 +936,7 @@ setInterval(function() {
         except Exception as e:
             self.log(f"⚠️ Testing3Exception: {e}", "WARNING")
         
-        # Testing4: Extension稳定性观察（更长观察Time）
+        # Testing4: Extension稳定性观察（更长观察time）
         self.log("Testing4: Extension稳定性观察 (15秒)...")
         try:
             start_time = time.time()
@@ -974,7 +974,7 @@ setInterval(function() {
         self.results["verification_results"] = verification_tests
         self.results["verification_score"] = success_rate
         
-        self.log(f"VerificationResult: {passed_tests}/{total_tests} 通过 ({success_rate:.0%})", 
+        self.log(f"Verificationresult: {passed_tests}/{total_tests} 通过 ({success_rate:.0%})", 
                 "SUCCESS" if success_rate >= 0.67 else "WARNING")
         
         return success_rate >= 0.67  # 至少通过2/3的Testing
@@ -992,11 +992,11 @@ setInterval(function() {
             except:
                 self.frida_process.kill()
         
-        # 保存Result
+        # 保存result
         self.save_results()
     
     def save_results(self):
-        """保存Result"""
+        """保存result"""
         self.results["end_time"] = datetime.now().isoformat()
         self.results["final_status"] = "completed"
         
@@ -1010,7 +1010,7 @@ setInterval(function() {
         with open(results_file, 'w', encoding='utf-8') as f:
             json.dump(self.results, f, indent=2, ensure_ascii=False)
         
-        self.log(f"Result已保存: {results_file}", "SUCCESS")
+        self.log(f"result已保存: {results_file}", "SUCCESS")
         return str(results_file)
     
     def run_bypass(self, package_name):
@@ -1066,7 +1066,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='Anti-debugBypassModule v1.0 - 骗过Reinforcement壳的安检System',
+        description='Anti-debugBypassModule v1.0 - 骗过reinforcement壳的安检System',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用示例:
@@ -1077,7 +1077,7 @@ def main():
     
     parser.add_argument('--package', required=True, help='目标ApplicationPackage name')
     parser.add_argument('--verbose', action='store_true', help='详细Output模式')
-    parser.add_argument('--config', help='ConfigurationFilePath（暂不支持）')
+    parser.add_argument('--config', help='ConfigurationfilePath（暂不支持）')
     
     args = parser.parse_args()
     
@@ -1085,7 +1085,7 @@ def main():
     print("🛡️  Anti-debugBypassModule v1.0 (开发版)")
     print("=" * 60)
     print(f"目标Application: {args.package}")
-    print(f"开始Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"开始time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
     
     bypass = AntiDebugBypass(verbose=args.verbose)
@@ -1095,12 +1095,12 @@ def main():
         
         print()
         print("=" * 60)
-        print("📊 执行Result")
+        print("📊 执行result")
         print("=" * 60)
         
         if success:
             print(f"✅ Anti-debugBypass流程Execution completed: {args.package}")
-            print(f"📁 ResultFile: {bypass.save_results()}")
+            print(f"📁 resultfile: {bypass.save_results()}")
             print()
             print("💡 下一步:")
             print("  1. 保持当前终端会话（FridaProcess正在运行）")
@@ -1110,11 +1110,11 @@ def main():
             print(f"     ./scripts/android-armor-breaker --package {args.package} --output ./output/")
         else:
             print(f"❌ Anti-debugBypassFailed: {args.package}")
-            print(f"📁 ResultFile: {bypass.save_results()}")
+            print(f"📁 resultfile: {bypass.save_results()}")
             print()
             print("💡 Recommendation:")
-            print("  1. 检查Application是否具有特殊的Protection机制")
-            print("  2. 尝试调整延迟Time（ModifyingConfigurationFile）")
+            print("  1. 检查Application是否具有特殊的protection机制")
+            print("  2. 尝试调整延迟time（ModifyingConfigurationfile）")
             print("  3. 考虑使用其他Unpacking方法")
         
         return 0 if success else 1

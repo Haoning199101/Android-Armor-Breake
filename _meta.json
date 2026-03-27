@@ -1,11 +1,11 @@
 {
   "ownerId": "android-armor-breaker-owner",
   "slug": "android-armor-breaker",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "publishedAt": 1772768088000,
   "name": "android-armor-breaker",
-  "description": "Android Armor Breaker - Frida-based unpacking tool for commercial and enterprise Android app protections. Provides APK reinforcement analysis and intelligent DEX extraction with deep search and anti-debug bypass capabilities. Fully internationalized with English documentation and interface. Cleaned up redundant files.",
-  "tags": ["android", "armor", "breaker", "dex", "unpack", "protection", "security", "internationalized", "cleaned"],
+  "description": "Android Armor Breaker - Frida-based unpacking tool for commercial and enterprise Android app protections. Provides APK reinforcement analysis and intelligent DEX extraction with deep search and anti-debug bypass capabilities. Fully internationalized with English documentation and interface. Fixed mixed Chinese-English output messages.",
+  "tags": ["android", "armor", "breaker", "dex", "unpack", "protection", "security", "internationalized", "translation-fixed"],
   "author": "Trx-HaoNing",
   "license": "MIT"
 }
