@@ -696,7 +696,7 @@ class ApkprotectionAnalyzer:
         
         # 1. Low confidence warning（优先显示）
         if confidence < 0.3:
-            recommendations.append("⚠️  **Low confidence warning**: Detection result confidence is low (低于30%)，Possible misjudgment")
+            recommendations.append("⚠️  **Low confidence warning**: Detection result confidence is low (below 30%)，Possible misjudgment")
         
         # 2. 基于protection类型的Recommendation
         if protection_type == "none" and protection_level == "basic":
@@ -713,25 +713,25 @@ class ApkprotectionAnalyzer:
                 recommendations.extend([
                     "⚠️  detected爱encryption企业版reinforcement",
                     "💡 Recommendation: 使用激进Unpacking策略",
-                    "🛠️  推荐Parameter: --bypass-antidebug --dynamic-puzzle",
+                    "🛠️  Recommended parameters: --bypass-antidebug --dynamic-puzzle",
                     "📊 Estimated success rate: 30-50% (基于历史TestingData)",
                     "⏱️  Estimated time: 5-10分钟",
                     "🔑 关键: 可能需要Root权限进行MemoryAttack"
                 ])
             else:
                 recommendations.extend([
-                    "✅ detected IJIAMI reinforcement (标准版)",
-                    "💡 Recommendation: 使用深度搜索模式",
-                    "🛠️  推荐Parameter: --deep-search --bypass-antidebug",
+                    "✅ detected IJIAMI reinforcement (standard edition)",
+                    "💡 Recommendation: Use deep search mode",
+                    "🛠️  Recommended parameters: --deep-search --bypass-antidebug",
                     "📊 Estimated success rate: 70-85%",
-                    "⏱️  Estimated time: 2-4分钟"
+                    "⏱️  Estimated time: 2-4 minutes"
                 ])
                 
         elif protection_type == "360":
             recommendations.extend([
                 "✅ detected360reinforcement",
-                "💡 Recommendation: 使用深度搜索模式",
-                "🛠️  推荐Parameter: --deep-search",
+                "💡 Recommendation: Use deep search mode",
+                "🛠️  Recommended parameters: --deep-search",
                 "📊 Estimated success rate: 80-90%",
                 "⏱️  Estimated time: 2-3分钟"
             ])
@@ -739,8 +739,8 @@ class ApkprotectionAnalyzer:
         elif protection_type == "baidu":
             recommendations.extend([
                 "✅ detected百度reinforcement",
-                "💡 Recommendation: 使用深度搜索模式突破DEX数量限制",
-                "🛠️  推荐Parameter: --deep-search",
+                "💡 Recommendation: Use deep search mode突破DEX数量限制",
+                "🛠️  Recommended parameters: --deep-search",
                 "📊 Estimated success rate: 85-95%",
                 "⏱️  Estimated time: 2-3分钟",
                 "💾 经验: 可突破26个DEX限制，获取完整53个DEX"
@@ -750,7 +750,7 @@ class ApkprotectionAnalyzer:
             recommendations.extend([
                 "✅ detected腾讯reinforcement",
                 "💡 Recommendation: 使用Anti-debugBypass+深度搜索",
-                "🛠️  推荐Parameter: --deep-search --bypass-antidebug",
+                "🛠️  Recommended parameters: --deep-search --bypass-antidebug",
                 "📊 Estimated success rate: 75-85%",
                 "⏱️  Estimated time: 3-5分钟"
             ])
@@ -767,7 +767,7 @@ class ApkprotectionAnalyzer:
                 recommendations.extend([
                     "✅ detected阿里reinforcement",
                     "💡 Recommendation: 使用自适应策略",
-                    "🛠️  推荐Parameter: --bypass-antidebug --deep-search",
+                    "🛠️  Recommended parameters: --bypass-antidebug --deep-search",
                     f"📊 置信度: {confidence*100:.1f}%",
                     "⏱️  Estimated time: 3-5分钟"
                 ])
@@ -777,7 +777,7 @@ class ApkprotectionAnalyzer:
             recommendations.extend([
                 f"✅ detected {protection_type} reinforcement (protection级别: {protection_level})",
                 "💡 Recommendation: 尝试自适应策略",
-                "🛠️  推荐Parameter: --detect-protection (让技能自动选择最佳策略)",
+                "🛠️  Recommended parameters: --detect-protection (让技能自动选择最佳策略)",
                 f"📊 置信度: {confidence*100:.1f}%",
                 "⏱️  Estimated time: 2-5分钟"
             ])
@@ -839,7 +839,7 @@ class ApkprotectionAnalyzer:
             # 显示Securitylibrary（非reinforcement特征）
             security_libs = native_info.get('security_libs', [])
             if security_libs:
-                self.log("  🔒 detected security library (可能为Application自有):")
+                self.log("  🔒 detected security library (possibly application-owned):")
                 for lib in security_libs[:3]:  # 只显示前3个
                     self.log(f"    - {os.path.basename(lib)}")
             
