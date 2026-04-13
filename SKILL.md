@@ -74,7 +74,33 @@ metadata:
 23. ✅ **Comprehensive File Operation Hooks** - Hooks fopen, open, readlink, ptrace, tracepid, etc.
 24. ✅ **Enhanced Verification System** - Detailed verification with success/failure reporting
 
-## 3. Installation
+## 3. ⚠️ Security and Responsible Use Notice
+
+### **Important Security Warning**
+**Android Armor Breaker** is a **high-privilege, dual-use tool** for legitimate security research. Due to its powerful capabilities, it has been flagged by ClawHub Security as "suspicious". Please review this section carefully before use.
+
+### **Legal and Ethical Requirements**
+- ✅ **Only use on applications you own or have explicit written permission to analyze**
+- ✅ **Comply with all applicable laws and regulations** (DMCA, CFAA, GDPR, etc.)
+- ✅ **Respect intellectual property rights and licensing agreements**
+- ✅ **Obtain proper authorization before analyzing any third-party applications**
+
+### **Safety Guidelines**
+1. **Use Isolated Testing Environments**: Test on dedicated Android devices or emulators, NOT personal or production devices
+2. **Required Permissions**: Rooted Android device, ADB root access, frida-server
+3. **Script Inspection**: Review all bundled scripts before execution
+4. **Memory Access Awareness**: This tool reads process memory which may contain sensitive information
+5. **No External Data Transmission**: Current version contains NO network calls or data exfiltration
+
+### **Intended Use Cases**
+✅ **Legitimate**: Security research, penetration testing, malware analysis, education
+❌ **Prohibited**: Unauthorized application analysis, intellectual property theft, piracy, privacy violation
+
+**By using this tool, you acknowledge that you have read, understood, and agree to comply with these guidelines and all applicable laws.**
+
+**For complete security documentation, see [SECURITY.md](SECURITY.md)**
+
+## 4. Installation
 
 ### 3.1 Automatic Installation via OpenClaw
 This skill is configured for automatic dependency installation. When installed through the OpenClaw skill system, it will automatically detect and install the following dependencies:
@@ -124,9 +150,9 @@ android-armor-breaker/
     └── origin.json       # Publishing source information
 ```
 
-## 4. Usage Strategies
+## 5. Usage Strategies
 
-### 4.1 Recommended Workflow
+### 5.1 Recommended Workflow
 Based on protection analysis results, follow this decision tree:
 
 ```
@@ -149,7 +175,7 @@ Based on protection analysis results, follow this decision tree:
    python3 scripts/memory_snapshot.py --package <package_name>
 ```
 
-### 4.2 Root Memory Extraction - The Ultimate Bypass
+### 5.2 Root Memory Extraction - The Ultimate Bypass
 The **Root Memory Extractor** is the most powerful tool against commercial reinforcements:
 
 **Key Advantages**:
@@ -176,7 +202,7 @@ ls -la /path/to/output_directory/com.target.app_root_unpacked/
 - Intelligently combines regions and crops to exact DEX size
 - Validates DEX structure integrity before saving
 
-### 4.3 Success Rates by Protection Type (Updated: 2026-04-10)
+### 5.3 Success Rates by Protection Type (Updated: 2026-04-10)
 | Reinforcement Vendor | Frida-based | Enhanced Frida (v2.2.0) | Root Memory | VDEX Support | Notes |
 |----------------------|-------------|--------------------------|-------------|--------------|-------|
 | **No reinforcement** | 98% | **98%** | 95% | N/A | Frida is faster |
@@ -200,9 +226,9 @@ ls -la /path/to/output_directory/com.target.app_root_unpacked/
 3. **If root not available**: Memory snapshot attack
 4. **Last resort**: Static analysis of encrypted configurations
 
-## 5. Recent Breakthroughs (2026-03-30)
+## 6. Recent Breakthroughs (2026-03-30)
 
-### 5.1 IJIAMI Commercial Reinforcement Bypassed
+### 6.1 IJIAMI Commercial Reinforcement Bypassed
 **Breakthrough**: Successfully extracted complete DEX from `Example_App_1.0.0.apk` (IJIAMI commercial edition).
 
 **Method Used**: Root memory extraction via `/proc/<PID>/mem` direct reading.
@@ -217,13 +243,13 @@ ls -la /path/to/output_directory/com.target.app_root_unpacked/
 - Established new attack paradigm: static memory analysis > dynamic injection
 - Technique applicable to all Android reinforcements (requires root)
 
-### 5.2 Skill Updates
+### 6.2 Skill Updates
 - Added `root_memory_extractor.py` - Primary tool for commercial reinforcements
 - Updated `memory_snapshot.py` - Enhanced with root memory fallback
 - Cleaned skill directory - Removed temporary files, focused on core scripts
 - Updated documentation - Added usage strategies and success rates
 
-### 5.3 VDEX Processing Capability Enhanced (v2.0.1)
+### 6.3 VDEX Processing Capability Enhanced (v2.0.1)
 
 **Breakthrough**: Successfully extracted DEX from NetEase Yidun VDEX (Verifier DEX) format, achieving complete runtime DEX extraction for a music streaming application.
 
@@ -260,7 +286,7 @@ ls -la /path/to/output_directory/com.target.app_root_unpacked/
 - Establishes foundation for ART/OAT format support
 - Provides technical blueprint for future Android runtime format processing
 
-### 5.4 Enhanced Anti-Debug Bypass for Strong Protections (v2.2.0 - 2026-04-10)
+### 6.4 Enhanced Anti-Debug Bypass for Strong Protections (v2.2.0 - 2026-04-10)
 
 **Breakthrough**: Significantly improved anti-debug bypass capabilities targeting strong anti-debug style protections that previously caused "script has been destroyed" errors.
 
@@ -303,7 +329,7 @@ python3 scripts/antidebug_bypass.py --package com.target.app --test-only --verbo
 | **Bangcle** | 10-20% | 50-65% | +45% points |
 | **General Protections** | 80-90% | 90-95% | +10% points |
 
-### 5.5 Handling Strong Anti-Debug Applications
+### 6.5 Handling Strong Anti-Debug Applications
 
 **Problem**: Applications like Example_App_4.7.6.apk exhibit strong anti-debug protections causing:
   - "script has been destroyed" errors
@@ -346,7 +372,7 @@ python3 scripts/antidebug_bypass.py --package com.target.app --test-only --verbo
 3. **Tertiary**: Memory snapshot attack (for immediately crashing apps)
 4. **Last Resort**: Static analysis of encrypted configs (as demonstrated with tik.tunnel.pro)
 
-### 5.6 Skill Optimization Summary (2026-04-10)
+### 6.6 Skill Optimization Summary (2026-04-10)
 
 **Completed Optimizations**:
 1. ✅ **Anti-debug enhancement** - Major upgrade to handle strong anti-debug style protections
