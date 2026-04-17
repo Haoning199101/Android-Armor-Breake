@@ -1,6 +1,6 @@
 ---
 name: android-armor-breaker
-description: Android Armor Breaker - Frida-based unpacking technology for commercial to enterprise Android app protections, providing complete APK reinforcement analysis and intelligent DEX extraction solutions.
+description: Android APK脱壳与加固破解工具 - Frida-based Android unpacker for commercial reinforcements (360, Baidu, Tencent, IJIAMI, Bangcle, AliProtect). Extract DEX from protected APKs, bypass anti-debug, support root memory extraction. 安卓加固脱壳、反调试绕过、DEX提取、内存dump、Frida脱壳、Android逆向、安全研究。
 metadata:
   {
     "openclaw":
@@ -31,6 +31,7 @@ metadata:
             },
           ],
       },
+    "tags": ["android", "apk", "unpacking", "脱壳", "加固", "frida", "dex", "reverse-engineering", "security", "pentest", "anti-debug", "memory-extraction", "root", "android-reverse", "apk-unpack", "dex-extract", "frida-dexdump", "android-security", "mobile-security", "app-security", "加固破解", "反调试", "内存提取", "逆向工程"],
   }
 ---
 

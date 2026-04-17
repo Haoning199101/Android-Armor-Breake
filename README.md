@@ -1,8 +1,10 @@
-# Android Armor Breaker v2.2.0
+# Android Armor Breaker v2.2.0 - Android APK Unpacker & Reinforcement Breaker
 
 > **Internationalized Version (65% Complete)** - Supports English and Chinese languages with internationalization of core functionality. Most scripts support bilingual output, some auxiliary scripts still have hardcoded English.
 
 Android应用护甲破坏者 - 基于OpenClaw平台的Frida脱壳技术，针对从商业级到企业级的Android应用保护方案，提供**APK加固分析**与**DEX智能提取**的完整解决方案。
+
+**关键词**: Android APK脱壳, 加固破解, Frida脱壳, DEX提取, 反调试绕过, 内存提取, 逆向工程, 安全研究, Android逆向, 移动安全
 
 ## 🎯 核心特性
 

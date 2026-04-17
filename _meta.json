@@ -18,7 +18,22 @@
     "unpacking",
     "internationalization",
     "frida",
-    "dex-extraction"
+    "dex-extraction",
+    "脱壳",
+    "加固",
+    "android-reverse",
+    "apk-unpack",
+    "anti-debug",
+    "memory-extraction",
+    "root",
+    "pentest",
+    "mobile-security",
+    "app-security",
+    "加固破解",
+    "反调试",
+    "内存提取",
+    "逆向工程",
+    "frida-dexdump"
   ],
   "languages": ["en-US", "zh-CN"]
 }
